@@ -1,0 +1,13 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs
+/src/nbtc/Cli/bin/Debug/netcoreapp3.1
+/src/nbtc/Cli/obj
+/src/nbtc/Nbtc/bin/Debug/netstandard2.0
+/src/nbtc/Nbtc/obj
+/src/nbtc/NodeWalker/obj
+/src/nbtc/Tests/bin/Debug/netcoreapp3.1
+/src/nbtc/Tests/obj
+/src/nbtc/.vs/nbtc
