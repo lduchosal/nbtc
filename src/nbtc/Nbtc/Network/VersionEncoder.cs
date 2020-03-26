@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Nbtc.Network;
 using System;
+using System.IO;
 
 namespace Tests.Network
 {
@@ -16,7 +17,18 @@ namespace Tests.Network
         public Result<byte[]> Encode(Nbtc.Network.Version version)
         {
 
-            return Result<byte[]>.Fail(ErrorEnum.Version);
+            using (var mem = new MemoryStream())
+            using (var writer = new BinaryWriter(mem))
+            {
+                writer.Write(version.Vversion);
+                writer.Write(version.Services);
+                writer.Write(version.Timestamp);
+                writer.Write(version.Receiver);
+                writer.Write(version.Sender);
+                writer.Write(version.Nonce);
+            }
+
+                return Result<byte[]>.Fail(ErrorEnum.Version);
             /*
             trace!("encode");
             self.version.encode(w).map_err(| _ | Error::VersionVersion) ?;
