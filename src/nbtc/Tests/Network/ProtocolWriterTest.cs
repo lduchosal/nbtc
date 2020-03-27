@@ -2,10 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Nbtc.Network;
 using System.Net;
-using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 using Nbtc.Serialization;
-using Serilog;
 
 namespace Tests.Network
 {
@@ -27,21 +24,24 @@ namespace Tests.Network
             var hex = new HexDump();
             var original = hex.Decode(dump);
 
-            var version = new Version {
+            var version = new Version
+            {
                 Vversion = 70002,
                 Services = Service.Network,
                 Timestamp = 1401217254,
-                Receiver = new NetworkAddr {
+                Receiver = new NetworkAddr
+                {
                     Services = Service.Network,
                     Ip = IPAddress.Parse("0.0.0.0"),
                     Port = 0
                 },
-                Sender = new NetworkAddr {
+                Sender = new NetworkAddr
+                {
                     Services = Service.Network,
                     Ip = IPAddress.Parse("fd87:d87e:eb43:64f2:2cf5:4dca:5941:2db7"),
                     Port = 8333
                 },
-                Nonce =  0xE83EE8FCCF20D947,
+                Nonce = 0xE83EE8FCCF20D947,
                 UserAgent = "/Satoshi:0.9.99/",
                 StartHeight = 0x00049F2C,
                 Relay = true
@@ -85,12 +85,11 @@ namespace Tests.Network
                     var version = reader.ReadVersion();
                     writer.Write(version);
                 }
+
                 var aoriginasl = hex.Encode(original.ToArray());
                 var amem = hex.Encode(write.ToArray());
                 Assert.AreEqual(aoriginasl, amem);
-
             }
-
         }
     }
 }

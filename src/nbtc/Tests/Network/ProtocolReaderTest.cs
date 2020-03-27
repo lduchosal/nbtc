@@ -3,10 +3,7 @@ using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Nbtc.Network;
 using System.Net;
-using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 using Nbtc.Serialization;
-using Serilog;
 
 namespace Tests.Network
 {
@@ -27,30 +24,24 @@ namespace Tests.Network
     ";
             var hex = new HexDump();
             var original = hex.Decode(dump);
-            
-            using (var read = new MemoryStream(original.ToArray()))
-            using (var write = new MemoryStream())
-            {
-                using (var reader = new ProtocolReader(read))
-                {
-                    var version = reader.ReadVersion();
-                    Assert.AreEqual(70002, version.Vversion);
-                    Assert.AreEqual(Service.Network, version.Services);
-                    Assert.AreEqual((UInt64)1401217254, version.Timestamp);
-                    Assert.AreEqual(IPAddress.Parse("::ffff:0:0"), version.Receiver.Ip);
-                    Assert.AreEqual(0, version.Receiver.Port);
-                    Assert.AreEqual(Service.Network, version.Receiver.Services);
-                    Assert.AreEqual(IPAddress.Parse("fd87:d87e:eb43:64f2:2cf5:4dca:5941:2db7"), version.Sender.Ip);
-                    Assert.AreEqual(8333, version.Sender.Port);
-                    Assert.AreEqual(Service.Network, version.Sender.Services);
-                    Assert.AreEqual((UInt64)16735069437859780935, version.Nonce);
-                    Assert.AreEqual("/Satoshi:0.9.99/", version.UserAgent);
-                    Assert.AreEqual(302892, version.StartHeight);
-                    Assert.AreEqual(true, version.Relay);
-                }
 
-            }
+            using var read = new MemoryStream(original.ToArray());
+            using var reader = new ProtocolReader(read);
+            var version = reader.ReadVersion();
 
+            Assert.AreEqual(70002, version.Vversion);
+            Assert.AreEqual(Service.Network, version.Services);
+            Assert.AreEqual((ulong) 1401217254, version.Timestamp);
+            Assert.AreEqual(IPAddress.Parse("::ffff:0:0"), version.Receiver.Ip);
+            Assert.AreEqual(0, version.Receiver.Port);
+            Assert.AreEqual(Service.Network, version.Receiver.Services);
+            Assert.AreEqual(IPAddress.Parse("fd87:d87e:eb43:64f2:2cf5:4dca:5941:2db7"), version.Sender.Ip);
+            Assert.AreEqual(8333, version.Sender.Port);
+            Assert.AreEqual(Service.Network, version.Sender.Services);
+            Assert.AreEqual(16735069437859780935, version.Nonce);
+            Assert.AreEqual("/Satoshi:0.9.99/", version.UserAgent);
+            Assert.AreEqual(302892, version.StartHeight);
+            Assert.AreEqual(true, version.Relay);
         }
     }
 }

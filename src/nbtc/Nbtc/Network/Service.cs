@@ -17,13 +17,12 @@ namespace Nbtc.Network
     /// +-------+----------------------+-----------------------------------------------------------------+
     /// </summary>
     [Flags]
-    public enum Service : UInt64
+    public enum Service : ulong
     {
         Network = 1,
         GetUtxo = 2,
         Bloom = 4,
         Witness = 8,
-        NetworkLimited = 1024,
+        NetworkLimited = 1024
     }
-
 }

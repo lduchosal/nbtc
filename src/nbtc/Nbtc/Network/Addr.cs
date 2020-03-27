@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace Nbtc.Network
 {
-
-
     /// <summary>
     /// https://en.bitcoin.it/wiki/Protocol_documentation#addr
     /// 
@@ -18,7 +14,7 @@ namespace Nbtc.Network
     /// Len  | Description | Data type | Comments
     /// 1+   | count       | var_int   | Number of address entries (max: 1000)
     /// 30x? | addr_list   | u32       | Address of other nodes on the network. 
-    ///      |             | + IpAddr  | version < 209 will only read the first one. 
+    ///      |             | + IpAddr  | version &lt; 209 will only read the first one. 
     ///      |             | ]         | The u32 is a timestamp (see note below).
     /// ```
     /// 
@@ -56,7 +52,6 @@ namespace Nbtc.Network
     ///  20 8D                                           - port 8333
     /// ```
     /// 
-
     /// </summary>
     public class Addr
     {

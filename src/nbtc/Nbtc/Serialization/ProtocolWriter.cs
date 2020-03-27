@@ -8,11 +8,12 @@ namespace Nbtc.Serialization
 {
     public sealed class ProtocolWriter : BinaryWriter
     {
-        public ProtocolWriter(Stream output, Encoding encoding, bool leaveOpen) 
+        public ProtocolWriter(Stream output, Encoding encoding, bool leaveOpen)
             : base(output, encoding, leaveOpen)
         {
         }
-        public ProtocolWriter(Stream output) 
+
+        public ProtocolWriter(Stream output)
             : base(output)
         {
         }
@@ -20,7 +21,7 @@ namespace Nbtc.Serialization
         public void Write(Version version)
         {
             Write(version.Vversion);
-            Write((UInt64)version.Services);
+            Write(version.Services);
             Write(version.Timestamp);
             Write(version.Receiver);
             Write(version.Sender);
@@ -34,21 +35,26 @@ namespace Nbtc.Serialization
         {
             if (string.IsNullOrEmpty(value))
             {
-                Write(new byte[] { 0 });
+                Write(new byte[] {0});
                 return;
             }
+
             base.Write(value);
         }
-        
+
         public void Write(NetworkAddr addr)
         {
-            Write((UInt64)addr.Services);
+            Write(addr.Services);
             var ip = addr.Ip.MapToIPv6();
             Write(ip.GetAddressBytes());
-            byte[] port = BitConverter.GetBytes(addr.Port);
+            var port = BitConverter.GetBytes(addr.Port);
             Array.Reverse(port);
             Write(port);
         }
 
+        public void Write(Service service)
+        {
+            Write((ulong) service);
+        }
     }
 }

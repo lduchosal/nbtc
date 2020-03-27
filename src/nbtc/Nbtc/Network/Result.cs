@@ -1,11 +1,11 @@
-﻿using Nbtc.Network;
-using System;
+﻿using System;
 
-namespace Tests.Network
+namespace Nbtc.Network
 {
     public class Result<T>
     {
-        private Result() {
+        private Result()
+        {
         }
 
         public T Data { get; private set; }
@@ -15,11 +15,12 @@ namespace Tests.Network
 
         public static Result<T> Fail(ErrorEnum error, Exception e = null)
         {
-            return new Result<T> { Error = error, Exception = e };
+            return new Result<T> {Error = error, Exception = e};
         }
+
         public static Result<T> Succeed(T data)
         {
-            return new Result<T> { Valid = true, Data  = data, };
+            return new Result<T> {Valid = true, Data = data};
         }
     }
 }

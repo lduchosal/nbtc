@@ -8,7 +8,6 @@ namespace Tests.Network
     [TestClass]
     public class CommandTest
     {
-
         [TestMethod]
         public void When_Command_Getaddr_Then_Success()
         {
@@ -44,6 +43,5 @@ namespace Tests.Network
 
             Assert.AreEqual(expected, command);
         }
-
     }
 }

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace Nbtc.Network
 {
@@ -96,7 +94,7 @@ namespace Nbtc.Network
     ///  ?   | Reserved  | str  | Reserved                              
     /// -----+-----------+------+----------------------------------------
     /// ```
-    /// Note: set<type> in the table above is a variable length integer followed by the number of fields of the given type (either int32_t or variable length string)
+    /// Note: set type in the table above is a variable length integer followed by the number of fields of the given type (either int32_t or variable length string)
     /// 
     /// ## Sample alert (no message header):
     /// 
@@ -116,20 +114,19 @@ namespace Nbtc.Network
     /// Expiration : 1329792435
     /// ID         : 1010
     /// Cancel     : 1009
-    /// setCancel  : <empty>
+    /// setCancel  : empty
     /// MinVer     : 10000
     /// MaxVer     : 61000
-    /// setSubVer  : <empty>
+    /// setSubVer  : empty
     /// Priority   : 100
-    /// Comment    : <empty>
+    /// Comment    : empty
     /// StatusBar  : "See bitcoin.org/feb20 if you have trouble connecting after 20 February"
-    /// Reserved   : <empty>
+    /// Reserved   : empty
     /// ```
     /// 
     /// </summary>
     public class Alert
     {
         public List<byte> Data { get; set; }
-
     }
 }

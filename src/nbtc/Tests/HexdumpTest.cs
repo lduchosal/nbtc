@@ -1,33 +1,28 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Tests
 {
-
     [TestClass]
     public class HexdumpTest
     {
         [TestMethod]
         public void when_encode_16_then_ok()
         {
-
             var data = new byte[16];
             var expected = @"
 00000000   00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00   ················
 ";
             var hex = new HexDump();
             var result = hex.Encode(data);
-            var e2 = hex.Decode(result);
 
 
-            Assert.AreEqual(expected, result);;
+            Assert.AreEqual(expected, result);
         }
-        [TestMethod]
-        public void when_encode_32_then_ok() {
 
+        [TestMethod]
+        public void when_encode_32_then_ok()
+        {
             var data = new byte[32];
             var expected = @"
 00000000   00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00   ················
@@ -36,13 +31,13 @@ namespace Tests
             var hex = new HexDump();
             var result = hex.Encode(data);
 
-            Assert.AreEqual(expected, result);;
+            Assert.AreEqual(expected, result);
         }
 
 
         [TestMethod]
-        public void when_encode_48_then_ok() {
-
+        public void when_encode_48_then_ok()
+        {
             var data = new byte[48];
             var expected = @"
 00000000   00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00   ················
@@ -57,8 +52,8 @@ namespace Tests
 
 
         [TestMethod]
-        public void when_encode_256_then_ok() {
-
+        public void when_encode_256_then_ok()
+        {
             var data = new byte[256];
             var expected = @"
 00000000   00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00   ················
@@ -86,8 +81,8 @@ namespace Tests
 
 
         [TestMethod]
-        public void when_encode_8_then_ok() {
-
+        public void when_encode_8_then_ok()
+        {
             var data = new byte[8];
             var expected = @"
 00000000   00 00 00 00 00 00 00 00                            ········        
@@ -99,8 +94,8 @@ namespace Tests
         }
 
         [TestMethod]
-        public void when_encode_0_then_ok() {
-
+        public void when_encode_0_then_ok()
+        {
             var data = new byte[0];
             var expected = @"
 ";
@@ -112,8 +107,8 @@ namespace Tests
 
 
         [TestMethod]
-        public void when_encode_24_then_ok() {
-
+        public void when_encode_24_then_ok()
+        {
             var data = new byte[24];
             var expected = @"
 00000000   00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00   ················
@@ -126,8 +121,8 @@ namespace Tests
         }
 
         [TestMethod]
-        public void when_encode_40_then_ok() {
-
+        public void when_encode_40_then_ok()
+        {
             var data = new byte[40];
             var expected = @"
 00000000   00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00   ················
@@ -141,9 +136,9 @@ namespace Tests
         }
 
         [TestMethod]
-        public void when_encode_40_one_then_ok() {
-
-            var data = Enumerable.Repeat((byte)1, 40).ToArray();
+        public void when_encode_40_one_then_ok()
+        {
+            var data = Enumerable.Repeat((byte) 1, 40).ToArray();
 
             var expected = @"
 00000000   01 01 01 01 01 01 01 01  01 01 01 01 01 01 01 01   ················
@@ -152,15 +147,15 @@ namespace Tests
 ";
             var hex = new HexDump();
             var result = hex.Encode(data);
-            
+
             Assert.AreEqual(expected, result);
         }
 
         [TestMethod]
-        public void when_encode_40_61_then_ok() {
+        public void when_encode_40_61_then_ok()
+        {
+            var data = Enumerable.Repeat((byte) 'a', 40).ToArray();
 
-            var data = Enumerable.Repeat((byte)'a', 40).ToArray();
-            
             var expected = @"
 00000000   61 61 61 61 61 61 61 61  61 61 61 61 61 61 61 61   aaaaaaaaaaaaaaaa
 00000010   61 61 61 61 61 61 61 61  61 61 61 61 61 61 61 61   aaaaaaaaaaaaaaaa
@@ -171,6 +166,5 @@ namespace Tests
 
             Assert.AreEqual(expected, result);
         }
-
     }
 }

@@ -10,11 +10,12 @@ namespace Nbtc.Serialization
 {
     public sealed class ProtocolReader : BinaryReader
     {
-        public ProtocolReader(Stream output, Encoding encoding, bool leaveOpen) 
+        public ProtocolReader(Stream output, Encoding encoding, bool leaveOpen)
             : base(output, encoding, leaveOpen)
         {
         }
-        public ProtocolReader(Stream output) 
+
+        public ProtocolReader(Stream output)
             : base(output)
         {
         }
@@ -31,7 +32,7 @@ namespace Nbtc.Serialization
                 Nonce = ReadUInt64(),
                 UserAgent = ReadVarString(),
                 StartHeight = ReadInt32(),
-                Relay = ReadBoolean(),
+                Relay = ReadBoolean()
             };
 
             return version;
@@ -43,15 +44,12 @@ namespace Nbtc.Serialization
             var content = ReadBytes(len);
             return Encoding.ASCII.GetString(content);
         }
-        
-        string ReadNullTerminatedString()
+
+        public string ReadNullTerminatedString()
         {
             var bytes = new List<byte>();
             byte b;
-            while ((b = ReadByte()) != 0x00)
-            {
-                bytes.Add(b);
-            }
+            while ((b = ReadByte()) != 0x00) bytes.Add(b);
 
             return Encoding.ASCII.GetString(bytes.ToArray());
         }
@@ -66,10 +64,9 @@ namespace Nbtc.Serialization
             };
 
             return addr;
-
         }
 
-        public UInt16 ReadPort()
+        public ushort ReadPort()
         {
             var bytes = ReadBytes(2);
             Array.Reverse(bytes);
@@ -86,7 +83,7 @@ namespace Nbtc.Serialization
         public Command ReadCommand()
         {
             var scommand = ReadNullTerminatedString();
-            var command = (Command)Enum.Parse(typeof(Command), scommand, true);
+            var command = (Command) Enum.Parse(typeof(Command), scommand, true);
             return command;
         }
     }

@@ -1,4 +1,4 @@
-﻿namespace Tests.Network
+﻿namespace Nbtc.Network
 {
     public enum ErrorEnum
     {

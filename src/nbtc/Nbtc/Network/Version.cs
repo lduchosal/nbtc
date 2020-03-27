@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Nbtc.Network
 {
@@ -41,15 +39,14 @@ namespace Nbtc.Network
     /// </summary>
     public struct Version
     {
-        public Int32 Vversion { get; set; }
+        public int Vversion { get; set; }
         public Service Services { get; set; }
-        public UInt64 Timestamp { get; set; }
+        public ulong Timestamp { get; set; }
         public NetworkAddr Receiver { get; set; }
         public NetworkAddr Sender { get; set; }
-        public UInt64 Nonce { get; set; }
-        public String UserAgent { get; set; }
-        public Int32 StartHeight { get; set; }
+        public ulong Nonce { get; set; }
+        public string UserAgent { get; set; }
+        public int StartHeight { get; set; }
         public bool Relay { get; set; }
     }
-
 }

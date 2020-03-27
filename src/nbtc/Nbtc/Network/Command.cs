@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Nbtc.Network
+﻿namespace Nbtc.Network
 {
-
     public enum Command
     {
         Version,
@@ -15,8 +10,6 @@ namespace Nbtc.Network
         Addr,
         Ping,
         Pong,
-        Inv,
+        Inv
     }
-
-
 }

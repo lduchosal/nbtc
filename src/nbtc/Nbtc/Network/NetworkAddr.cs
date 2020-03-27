@@ -7,6 +7,6 @@ namespace Nbtc.Network
     {
         public Service Services { get; set; }
         public IPAddress Ip { get; set; }
-        public UInt16 Port { get; set; }
+        public ushort Port { get; set; }
     }
 }
