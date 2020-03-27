@@ -18,8 +18,9 @@ namespace Tests
             var expected = @"
 00000000   00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00   ················
 ";
-            var result = HexDump.Encode(data);
-            var e2 = HexDump.Decode(result);
+            var hex = new HexDump();
+            var result = hex.Encode(data);
+            var e2 = hex.Decode(result);
 
 
             Assert.AreEqual(expected, result);;
@@ -32,7 +33,8 @@ namespace Tests
 00000000   00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00   ················
 00000010   00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00   ················
 ";
-            var result = HexDump.Encode(data);
+            var hex = new HexDump();
+            var result = hex.Encode(data);
 
             Assert.AreEqual(expected, result);;
         }
@@ -47,7 +49,8 @@ namespace Tests
 00000010   00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00   ················
 00000020   00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00   ················
 ";
-            var result = HexDump.Encode(data);
+            var hex = new HexDump();
+            var result = hex.Encode(data);
 
             Assert.AreEqual(expected, result);
         }
@@ -75,7 +78,8 @@ namespace Tests
 000000E0   00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00   ················
 000000F0   00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00   ················
 ";
-            var result = HexDump.Encode(data);
+            var hex = new HexDump();
+            var result = hex.Encode(data);
 
             Assert.AreEqual(expected, result);
         }
@@ -88,7 +92,8 @@ namespace Tests
             var expected = @"
 00000000   00 00 00 00 00 00 00 00                            ········        
 ";
-            var result = HexDump.Encode(data);
+            var hex = new HexDump();
+            var result = hex.Encode(data);
 
             Assert.AreEqual(expected, result);
         }
@@ -99,7 +104,8 @@ namespace Tests
             var data = new byte[0];
             var expected = @"
 ";
-            var result = HexDump.Encode(data);
+            var hex = new HexDump();
+            var result = hex.Encode(data);
 
             Assert.AreEqual(expected, result);
         }
@@ -113,7 +119,8 @@ namespace Tests
 00000000   00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00   ················
 00000010   00 00 00 00 00 00 00 00                            ········        
 ";
-            var result = HexDump.Encode(data);
+            var hex = new HexDump();
+            var result = hex.Encode(data);
 
             Assert.AreEqual(expected, result);
         }
@@ -127,7 +134,8 @@ namespace Tests
 00000010   00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00   ················
 00000020   00 00 00 00 00 00 00 00                            ········        
 ";
-            var result = HexDump.Encode(data);
+            var hex = new HexDump();
+            var result = hex.Encode(data);
 
             Assert.AreEqual(expected, result);
         }
@@ -142,7 +150,8 @@ namespace Tests
 00000010   01 01 01 01 01 01 01 01  01 01 01 01 01 01 01 01   ················
 00000020   01 01 01 01 01 01 01 01                            ········        
 ";
-            var result = HexDump.Encode(data);
+            var hex = new HexDump();
+            var result = hex.Encode(data);
             
             Assert.AreEqual(expected, result);
         }
@@ -157,7 +166,8 @@ namespace Tests
 00000010   61 61 61 61 61 61 61 61  61 61 61 61 61 61 61 61   aaaaaaaaaaaaaaaa
 00000020   61 61 61 61 61 61 61 61                            aaaaaaaa        
 ";
-            var result = HexDump.Encode(data);
+            var hex = new HexDump();
+            var result = hex.Encode(data);
 
             Assert.AreEqual(expected, result);
         }

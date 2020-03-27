@@ -11,10 +11,11 @@ namespace Tests.Network
         public T Data { get; private set; }
         public bool Valid { get; private set; }
         public ErrorEnum Error { get; private set; }
+        public Exception Exception { get; private set; }
 
-        public static Result<T> Fail(ErrorEnum error)
+        public static Result<T> Fail(ErrorEnum error, Exception e = null)
         {
-            return new Result<T> { Error = error, };
+            return new Result<T> { Error = error, Exception = e };
         }
         public static Result<T> Succeed(T data)
         {

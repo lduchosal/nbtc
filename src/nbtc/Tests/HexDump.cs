@@ -8,9 +8,9 @@ namespace Tests
 {
     public class HexDump
     {
-        private static Regex _re = new Regex(@"^(?<offset>[0-9a-f]{8})\s{3}(?<hexa>[0-9a-f\s]{48})\s{3}(?<dump>.{1,16})$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private readonly Regex _re = new Regex(@"^(?<offset>[0-9a-f]{8})\s{3}(?<hexa>[0-9a-f\s]{48})\s{3}(?<dump>.{1,16})$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-        public static ReadOnlySpan<byte> Decode(string dump)
+        public  ReadOnlySpan<byte> Decode(string dump)
         {
 
             //00000000   01 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00   ................
@@ -40,7 +40,7 @@ namespace Tests
             return result.ToArray();
         }
 
-        public static string Encode(byte[] bytes, int bytesPerLine = 16)
+        public string Encode(byte[] bytes, int bytesPerLine = 16)
         {
             if (bytes == null) return "<null>";
             int bytesLength = bytes.Length;

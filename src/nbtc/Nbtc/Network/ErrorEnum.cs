@@ -3,6 +3,7 @@
     public enum ErrorEnum
     {
         Command,
-        Version
+        Version,
+        NetworkAddr
     }
 }

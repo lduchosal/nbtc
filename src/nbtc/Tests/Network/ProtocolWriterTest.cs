@@ -1,11 +1,16 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System.IO;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Nbtc.Network;
 using System.Net;
+using System.Text;
+using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
+using Nbtc.Serialization;
+using Serilog;
 
 namespace Tests.Network
 {
     [TestClass]
-    public class VersionDecoderTest
+    public class ProtocolWriterTest
     {
         [TestMethod]
         public void When_Encode_Version_Message_Then_Message_Equal()
@@ -19,8 +24,8 @@ namespace Tests.Network
 00000000   10 2f 53 61 74 6f 73 68  69 3a 30 2e 39 2e 39 39   .useragent......
 00000000   2f 2c 9f 04 00 01                                  height.relay.   
 ";
-    
-            var original = HexDump.Decode(dump);
+            var hex = new HexDump();
+            var original = hex.Decode(dump);
 
             var version = new Version {
                 Vversion = 70002,
@@ -42,11 +47,17 @@ namespace Tests.Network
                 Relay = true
             };
 
-            var encoder = new VersionEncoder();
-            var result = encoder.Encode(version);
+            using (var mem = new MemoryStream())
+            {
+                using (var protocol = new ProtocolWriter(mem))
+                {
+                    protocol.Write(version);
+                }
 
-            Assert.AreEqual(true, result.Valid);
-            Assert.AreEqual(original.ToArray(), result.Data);
+                var aoriginasl = hex.Encode(original.ToArray());
+                var amem = hex.Encode(mem.ToArray());
+                Assert.AreEqual(aoriginasl, amem);
+            }
         }
 
         [TestMethod]
@@ -61,20 +72,25 @@ namespace Tests.Network
 00000000   10 2f 53 61 74 6f 73 68  69 3a 30 2e 39 2e 39 39   .useragent......
 00000000   2f 2c 9f 04 00 01                                  height.relay.   
     ";
+            var hex = new HexDump();
+            var original = hex.Decode(dump);
 
-            var original = HexDump.Decode(dump);
 
-            var decoder = new VersionDecoder();
-            var encoder = new VersionEncoder();
+            using (var read = new MemoryStream(original.ToArray()))
+            using (var write = new MemoryStream())
+            {
+                using (var reader = new ProtocolReader(read))
+                using (var writer = new ProtocolWriter(write))
+                {
+                    var version = reader.ReadVersion();
+                    writer.Write(version);
+                }
+                var aoriginasl = hex.Encode(original.ToArray());
+                var amem = hex.Encode(write.ToArray());
+                Assert.AreEqual(aoriginasl, amem);
 
-            var decode = decoder.Decode(original);
-            Assert.IsTrue(decode.Valid);
+            }
 
-            var decoded = decode.Data;
-            var reencoded = encoder.Encode(decoded);
-            Assert.IsTrue(reencoded.Valid);
-
-            Assert.AreEqual(original.ToArray(), reencoded.Data);
         }
     }
 }

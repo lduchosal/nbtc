@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 
 namespace Nbtc.Network
 {
@@ -6,6 +7,6 @@ namespace Nbtc.Network
     {
         public Service Services { get; set; }
         public IPAddress Ip { get; set; }
-        public int Port { get; set; }
+        public UInt16 Port { get; set; }
     }
 }
