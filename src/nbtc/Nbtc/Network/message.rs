@@ -77,29 +77,6 @@ impl Decodable for Magic {
     }
 }
 
-/// https://en.bitcoin.it/wiki/Protocol_documentation
-/// 
-/// Message structure
-/// ```
-/// +------------+-------------+-----------+-------------------------------------------------+
-/// | Field Size | Description | Data type | Comments                                        |
-/// +------------+-------------+-----------+-------------------------------------------------+
-/// |    4       | magic       | uint32_t  | Magic value indicating message origin network,  |
-/// |            |             |           | and used to seek to next message when stream    |
-/// |            |             |           | state is unknown                                |
-/// +------------+-------------+-----------+-------------------------------------------------+
-/// |   12       | command     | char[12]  | ASCII string identifying the packet content,    |
-/// |            |             |           | NULL padded (non-NULL padding results in packet |
-/// |            |             |           | rejected)                                       |
-/// +------------+-------------+-----------+-------------------------------------------------+
-/// |    4       | length      | uint32_t  | Length of payload in number of bytes            |
-/// +------------+-------------+-----------+-------------------------------------------------+
-/// |    4       | checksum    | uint32_t  | First 4 bytes of sha256(sha256(payload))        |
-/// +------------+-------------+-----------+-------------------------------------------------+
-/// |    ?       | payload     | uchar[]   | The actual data                                 |
-/// +------------+-------------+-----------+-------------------------------------------------+
-/// ```
-/// 
 /// 
 #[derive(Debug)]
 pub struct Message {
@@ -344,7 +321,7 @@ mod test {
 
 
     #[test]
-    fn when_encode_getaddr_message_then_same() {
+    fn When_Encode_getaddr_message_Then_same() {
 
         let dump = "
 00000000   F9 BE B4 D9 67 65 74 61  64 64 72 00 00 00 00 00   main.getaddr....

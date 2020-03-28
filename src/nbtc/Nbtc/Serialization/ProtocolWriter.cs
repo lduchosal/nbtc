@@ -36,5 +36,15 @@ namespace Nbtc.Serialization
             
         }
 
+        public void Write(Ping message)
+        {
+            Write(message.Nonce);
+        }
+
+        public void Write(Pong message)
+        {
+            Write(message.Nonce);
+        }
+
     }
 }

@@ -10,14 +10,16 @@ namespace Nbtc.Serialization
 {
     public  sealed partial class ProtocolReader 
     {
-        public string ReadNullTerminatedString()
+        public string ReadNullTerminatedString(int len)
         {
-            var bytes = new List<byte>();
-            byte b;
-            while ((b = ReadByte()) != 0x00) bytes.Add(b);
-
-            return Encoding.ASCII.GetString(bytes.ToArray());
+            var bytes = ReadBytes(len);
+            var bstring = new List<byte>();
+            for (int i = 0; i < len; i++)
+            {
+                if (bytes[i] == 0x00) break;
+                bstring.Add(bytes[i]);
+            }
+            return Encoding.ASCII.GetString(bstring.ToArray());
         }
-
     }
 }

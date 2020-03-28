@@ -6,24 +6,7 @@ use crate::encode::varint::VarInt;
 use std::io::{Read, Write, Cursor};
 use byteorder::{LittleEndian, BigEndian, ReadBytesExt, WriteBytesExt};
 
-/// https://en.bitcoin.it/wiki/Protocol_documentation#inv
-/// 
-/// # inv
-/// 
-/// Allows a node to advertise its knowledge of one or more objects. It can be received unsolicited, 
-/// or in reply to getblocks.
-/// 
-/// Payload (maximum 50,000 entries, which is just over 1.8 megabytes):
-/// 
-/// ```
-/// +------+-------------+------------+-----------------------------+
-/// | Size | Description | Data type  | Comments                    |
-/// +------+-------------+------------+-----------------------------+
-/// |   1+ | count       | var_int    | Number of inventory entries |
-/// | 36x? | inventory   | inv_vect[] | Inventory vectors           |
-/// +------+-------------+------------+-----------------------------+
-/// ```
-/// 
+
 #[derive(Debug, PartialEq)]
 pub struct Inv {
     data: Vec<u8>,
@@ -67,7 +50,7 @@ mod test {
     use std::io::Cursor;
 
     #[test]
-    fn when_encode_inv_then_nothing_to_encode() {
+    fn When_Encode_inv_Then_nothing_To_Encode() {
 
         let message = Inv {
             data: Vec::new()
@@ -80,7 +63,7 @@ mod test {
     }
 
     #[test]
-    fn when_decode_inv_then_nothing_to_encode() {
+    fn When_Decode_inv_Then_nothing_To_Encode() {
 
         let data : Vec<u8> = vec![ 0x0 ];
         let mut read = Cursor::new(&data);

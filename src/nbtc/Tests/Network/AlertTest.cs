@@ -14,7 +14,7 @@ namespace Tests.Network
     {
 
         [TestMethod]
-        public void when_encode_alert_then_nothing_to_encode()
+        public void When_Encode_alert_Then_nothing_To_Encode()
         {
 
             var hex = new HexDump();
@@ -39,7 +39,7 @@ namespace Tests.Network
         }
 
         [TestMethod]
-        public void when_encode_one_alert_then_encode()
+        public void When_Encode_one_alert_Then_Encode()
         {
 
             var bytes = @"
@@ -69,7 +69,7 @@ namespace Tests.Network
 
         
         [TestMethod]
-        public void when_encode_big_alert_then_encode()
+        public void When_Encode_big_alert_Then_Encode()
         {
 
             var bytes = @"
@@ -207,7 +207,7 @@ namespace Tests.Network
         }
 
         [TestMethod]
-        public void when_decode_alert_then_nothing_to_encode()
+        public void When_Decode_alert_Then_nothing_To_Encode()
         {
 
             var data = new byte[] {0};

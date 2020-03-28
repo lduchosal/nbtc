@@ -17,11 +17,10 @@ namespace Nbtc.Serialization
 
         public Command ReadCommand()
         {
-            var scommand = ReadNullTerminatedString();
+            var scommand = ReadNullTerminatedString(12);
             var command = (Command) Enum.Parse(typeof(Command), scommand, true);
             return command;
         }
-        
         
         public Alert ReadAlert()
         {
@@ -34,5 +33,22 @@ namespace Nbtc.Serialization
             };
         }
 
+        public Ping ReadPing()
+        {
+            var nonce = ReadUInt64();
+            return new Ping
+            {
+                Nonce = nonce
+            };
+        }
+
+        public Pong ReadPong()
+        {
+            var nonce = ReadUInt64();
+            return new Pong
+            {
+                Nonce = nonce
+            };
+        }
     }
 }

@@ -37,7 +37,7 @@ namespace Nbtc.Network
     /// 
     /// A "verack" packet shall be sent if the version packet was accepted.
     /// </summary>
-    public struct Version
+    public class Version : IPayload
     {
         public int Vversion { get; set; }
         public Service Services { get; set; }
@@ -48,5 +48,7 @@ namespace Nbtc.Network
         public string UserAgent { get; set; }
         public int StartHeight { get; set; }
         public bool Relay { get; set; }
+        public Command Command { get { return Command.Version; }}
+
     }
 }

@@ -13,7 +13,7 @@ namespace Tests.Network
     {
 
         [TestMethod]
-        public void When_Decode_VarInt_0x00_then_1_byte()
+        public void When_Decode_VarInt_0x00_Then_1_byte()
         {
 
             var data = new byte[] {0x00, 0x00, 0x00, 0x00};
@@ -28,7 +28,7 @@ namespace Tests.Network
         }
 
         [TestMethod]
-        public void When_Decode_VarInt_0xfc_then_1_byte()
+        public void When_Decode_VarInt_0xfc_Then_1_byte()
         {
 
             var data = new byte[] {0xfc, 0x00, 0x00, 0x00 };
@@ -43,7 +43,7 @@ namespace Tests.Network
         }
 
         [TestMethod]
-        public void When_Decode_VarInt_0xfd_then_3_byte()
+        public void When_Decode_VarInt_0xfd_Then_3_byte()
         {
 
             var data = new byte[] {0xfd, 0xfe, 0x00, 0x00};
@@ -58,7 +58,7 @@ namespace Tests.Network
         }
 
         [TestMethod]
-        public void When_Decode_VarInt_0xfd_fe_01_then_3_byte()
+        public void When_Decode_VarInt_0xfd_fe_01_Then_3_byte()
         {
 
             var data = new byte[] {0xfd, 0xfe, 0x01, 0x00};
@@ -74,7 +74,7 @@ namespace Tests.Network
 
 
         [TestMethod]
-        public void When_Decode_VarInt_0xfe_then_5_byte()
+        public void When_Decode_VarInt_0xfe_Then_5_byte()
         {
 
             var data = new byte[] {0xfe, 0x03, 0x02, 0x01, 0x00};
@@ -89,7 +89,7 @@ namespace Tests.Network
         }
 
         [TestMethod]
-        public void When_Decode_VarInt_0xff_then_9_byte()
+        public void When_Decode_VarInt_0xff_Then_9_byte()
         {
 
             var data = new byte[] {0xff, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x01, 0x00};
@@ -105,37 +105,35 @@ namespace Tests.Network
 
 
         [TestMethod]
-        [ExpectedException(typeof(EndOfStreamException))]
         public void When_Decode_VarInt_0xff_Too_Small_Then_Fail_ParseError_VarInt_ff()
         {
 
             var data = new byte[] {0xff, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02};
             using var mem = new MemoryStream(data);
             using var reader = new ProtocolReader(mem);
-            reader.ReadVarInt();
+
+            Assert.ThrowsException<EndOfStreamException>(reader.ReadVarInt);
+
         }
 
 
         [TestMethod]
-        [ExpectedException(typeof(EndOfStreamException))]
         public void When_Decode_VarInt_0xfe_Too_Small_Then_Fail_ParseError_VarInt_fe()
         {
-
             var data = new byte[] {0xfe, 0x07, 0x06, 0x05};
             using var mem = new MemoryStream(data);
             using var reader = new ProtocolReader(mem);
-            reader.ReadVarInt();
+            Assert.ThrowsException<EndOfStreamException>(reader.ReadVarInt);
+
         }
 
         [TestMethod]
-        [ExpectedException(typeof(EndOfStreamException))]
         public void When_Decode_VarInt_0xfd_Too_Small_Then_Fail_ParseError_VarInt_fd()
         {
-
             var data = new byte[] {0xfd, 0x07};
             using var mem = new MemoryStream(data);
             using var reader = new ProtocolReader(mem);
-            reader.ReadVarInt();
+            Assert.ThrowsException<EndOfStreamException>(reader.ReadVarInt);
         }
 
         [TestMethod]

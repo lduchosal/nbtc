@@ -11,7 +11,7 @@ namespace Tests.Network
     public class TimedNetworkAddrTest
     {
         [TestMethod]
-        public void when_encode_timednetworkaddr_then_encode()
+        public void When_Encode_timednetworkaddr_Then_Encode()
         {
 
             var hex = new HexDump();
@@ -45,7 +45,7 @@ namespace Tests.Network
         }
 
         [TestMethod]
-        public void when_encode_one_addr_then_encode()
+        public void When_Encode_one_addr_Then_Encode()
         {
 
             var bytes = @"
@@ -79,7 +79,7 @@ namespace Tests.Network
         }
 
         [TestMethod]
-        public void when_decode_addr_then_nothing_to_encode()
+        public void When_Decode_addr_Then_nothing_To_Encode()
         {
 
             var bytes = @"

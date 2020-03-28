@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Net;
 
 namespace Nbtc.Network
 {
@@ -53,8 +54,9 @@ namespace Nbtc.Network
     /// ```
     /// 
     /// </summary>
-    public class Addr
+    public class Addr : IPayload
     {
         public List<TimedNetworkAddr> Addrs { get; set; }
+        public Command Command { get { return Command.Addr;} }
     }
 }

@@ -125,8 +125,9 @@ namespace Nbtc.Network
     /// ```
     /// 
     /// </summary>
-    public class Alert
+    public class Alert : IPayload
     {
         public byte[] Data { get; set; }
+        public Command Command { get { return Command.Alert;} }
     }
 }
