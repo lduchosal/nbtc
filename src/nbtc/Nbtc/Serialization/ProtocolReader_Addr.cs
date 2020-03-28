@@ -1,56 +1,15 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using System.Text;
 using Nbtc.Network;
 using Version = Nbtc.Network.Version;
 
 namespace Nbtc.Serialization
 {
-    public sealed class ProtocolWriter : BinaryWriter
+    public  sealed partial class ProtocolReader 
     {
-        public ProtocolWriter(Stream output)
-            : base(output)
-        {
-        }
-
-        public void Write(Version version)
-        {
-            Write(version.Vversion);
-            Write(version.Services);
-            Write(version.Timestamp);
-            Write(version.Receiver);
-            Write(version.Sender);
-            Write(version.Nonce);
-            Write(version.UserAgent);
-            Write(version.StartHeight);
-            Write(version.Relay);
-        }
-
-        public override void Write(string value)
-        {
-            if (string.IsNullOrEmpty(value))
-            {
-                Write(new byte[] {0});
-                return;
-            }
-
-            base.Write(value);
-        }
-
-        public void Write(NetworkAddr addr)
-        {
-            Write(addr.Services);
-            var ip = addr.Ip.MapToIPv6();
-            Write(ip.GetAddressBytes());
-            var port = BitConverter.GetBytes(addr.Port);
-            Array.Reverse(port);
-            Write(port);
-        }
-
-        public void Write(Service service)
-        {
-            Write((ulong) service);
-        }
 
         /// <summary>
         /// https://en.bitcoin.it/wiki/Protocol_documentation#addr
@@ -103,60 +62,36 @@ namespace Nbtc.Serialization
         /// ```
         /// 
         /// </summary>
-        public void Write(Addr addr)
+
+        public Addr ReadAddr()
         {
-            Write((byte) addr.Addrs.Count);
-            foreach (var tna in addr.Addrs)
+            var len = ReadByte();
+            var addrs = new List<TimedNetworkAddr>();
+            for (int i = 0; i < len; i++)
             {
-                Write(tna);
+                var tna = ReadTimedNetworkAddr();
+                addrs.Add(tna);
             }
-        }
 
-        public void Write(TimedNetworkAddr tna)
-        {
-            Write(tna.Timestamp);
-            Write(tna.NetworkAddr);
-        }
-
-
-        public void Write(Alert version)
-        {
-            var len = new VarInt
+            return new Addr
             {
-                Value = (ulong)version.Data.Length
+                Addrs = addrs
             };
-            Write(len);
-            Write(version.Data);
-            
         }
-
-        public void Write(VarInt version)
+        
+        public TimedNetworkAddr ReadTimedNetworkAddr()
         {
+            var ts = ReadUInt32();
+            var addr = ReadNetworkAddr();
 
+            return new TimedNetworkAddr
+            {
+                Timestamp = ts,
+                NetworkAddr = addr
+            };
 
-            byte len = version.Value <= 0xFC ? (byte)version.Value
-                    : version.Value <= 0xFFFF ? (byte)0xFD
-                    : version.Value <= 0xFFFFFFFF ? (byte)0xFE
-                    : (byte)0xFF
-                ;
-
-            Write(len);
-
-            if (version.Value <= 0xFC)
-            {
-            }
-            else if (version.Value >= 0xFD && version.Value <= 0xFFFF)
-            {
-                Write((UInt16)version.Value);
-            }
-            else if (version.Value > 0xFFFF && version.Value <= 0xFFFFFFFF)
-            {
-                Write((UInt32)version.Value);
-            }
-            else
-            {
-                Write((UInt64)version.Value);
-            }
         }
+
+
     }
 }

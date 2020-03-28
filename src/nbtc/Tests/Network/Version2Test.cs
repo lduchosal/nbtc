@@ -7,7 +7,8 @@ using Nbtc.Serialization;
 namespace Tests.Network
 {
     [TestClass]
-    public class ProtocolWriterTest
+    public class Version2Test
+    
     {
         [TestMethod]
         public void When_Encode_Version_Message_Then_Message_Equal()

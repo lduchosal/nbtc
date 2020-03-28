@@ -7,7 +7,18 @@ namespace Tests
     public class HexdumpTest
     {
         [TestMethod]
-        public void when_encode_16_then_ok()
+        public void When_Encode_null_Then_null()
+        {
+            byte[] data = null;
+            var expected = @"<null>";
+            var hex = new HexDump();
+            var result = hex.Encode(data);
+
+            Assert.AreEqual(expected, result);
+        }
+
+        [TestMethod]
+        public void When_Encode_16_Then_ok()
         {
             var data = new byte[16];
             var expected = @"
@@ -21,7 +32,7 @@ namespace Tests
         }
 
         [TestMethod]
-        public void when_encode_32_then_ok()
+        public void When_Encode_32_Then_ok()
         {
             var data = new byte[32];
             var expected = @"
@@ -36,7 +47,7 @@ namespace Tests
 
 
         [TestMethod]
-        public void when_encode_48_then_ok()
+        public void When_Encode_48_Then_ok()
         {
             var data = new byte[48];
             var expected = @"
@@ -52,7 +63,7 @@ namespace Tests
 
 
         [TestMethod]
-        public void when_encode_256_then_ok()
+        public void When_Encode_256_Then_ok()
         {
             var data = new byte[256];
             var expected = @"
@@ -81,7 +92,7 @@ namespace Tests
 
 
         [TestMethod]
-        public void when_encode_8_then_ok()
+        public void When_Encode_8_Then_ok()
         {
             var data = new byte[8];
             var expected = @"
@@ -94,7 +105,7 @@ namespace Tests
         }
 
         [TestMethod]
-        public void when_encode_0_then_ok()
+        public void When_Encode_0_Then_ok()
         {
             var data = new byte[0];
             var expected = @"
@@ -107,7 +118,7 @@ namespace Tests
 
 
         [TestMethod]
-        public void when_encode_24_then_ok()
+        public void When_Encode_24_Then_ok()
         {
             var data = new byte[24];
             var expected = @"
@@ -121,7 +132,7 @@ namespace Tests
         }
 
         [TestMethod]
-        public void when_encode_40_then_ok()
+        public void When_Encode_40_Then_ok()
         {
             var data = new byte[40];
             var expected = @"
@@ -136,7 +147,7 @@ namespace Tests
         }
 
         [TestMethod]
-        public void when_encode_40_one_then_ok()
+        public void When_Encode_40_one_Then_ok()
         {
             var data = Enumerable.Repeat((byte) 1, 40).ToArray();
 
@@ -152,7 +163,7 @@ namespace Tests
         }
 
         [TestMethod]
-        public void when_encode_40_61_then_ok()
+        public void When_Encode_40_61_Then_ok()
         {
             var data = Enumerable.Repeat((byte) 'a', 40).ToArray();
 
