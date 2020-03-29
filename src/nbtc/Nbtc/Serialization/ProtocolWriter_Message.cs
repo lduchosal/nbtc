@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Security.Cryptography;
 using System.Text;
 using Nbtc.Network;
 using Version = Nbtc.Network.Version;
@@ -34,15 +36,34 @@ namespace Nbtc.Serialization
         /// 
         /// </summary>
         /// <param name="message"></param>
-        public void Write<T> (Message<T>  message) where T : IPayload
+        public void Write(Message message)
         {
-            Write(message.Magic);
-            WritePayload(message.Payload);
+            Write(message.NetworkId);
+            var payload = message.Payload;
+            
+            using var mem = new MemoryStream();
+            using var writer = new ProtocolWriter(mem);
+            writer.WritePayload(payload);
+            var bpayload = mem.ToArray();
+            var checksum = Checksum(bpayload);
+            
+            Write(payload.Command);
+            Write((UInt32)bpayload.Length); // len
+            Write(checksum); // checksum
+            Write(bpayload);
+        }
+        
+        private UInt32 Checksum(byte[] bytes)
+        {
+            var sha = SHA256.Create();
+            var doublesha = sha.ComputeHash(sha.ComputeHash(bytes));
+            return BitConverter.ToUInt32(doublesha, 0);
         }
 
-        public void WritePayload<T>(T payload) where T : IPayload
+        
+
+        public void WritePayload(IPayload payload) 
         {
-            Write(payload.Command);
             
             if (payload.Command == Command.Version)
             {
@@ -112,9 +133,9 @@ namespace Nbtc.Serialization
             // No payload data
         }
 
-        public void Write(Magic magic)
+        public void Write(Network.NetworkId networkId)
         {
-            Write((UInt64)magic);
+            Write((UInt32)networkId);
         }
         
         public void Write(Command command)
@@ -125,5 +146,12 @@ namespace Nbtc.Serialization
             Write(bytes, 0, 12);
         }
 
+        public void Write(List<Message> messages)
+        {
+            foreach (var message in messages)
+            {
+                Write(message);
+            }
+        }
     }
 }

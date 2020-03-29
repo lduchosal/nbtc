@@ -26,10 +26,10 @@ namespace Nbtc.Network
     /// +------------+-------------+-----------+-------------------------------------------------+
     /// ```
     /// </summary>
-    public class Message<T> where T : IPayload
+    public class Message
     {
-        public Magic Magic { get; set; }
-        public T Payload { get; set; }
+        public NetworkId NetworkId { get; set; }
+        public IPayload Payload { get; set; }
     }
     
     /// <summary>
@@ -51,7 +51,7 @@ namespace Nbtc.Network
     /// ```
     ///
     /// </summary>
-    public enum Magic : UInt32 {
+    public enum NetworkId : UInt32 {
         MainNet = 0xD9B4BEF9,
         TestNet = 0x0709110B,
         RegTest = 0xDAB5BFFA,

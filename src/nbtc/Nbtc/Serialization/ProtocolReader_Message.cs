@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using System.Security.Cryptography;
 using System.Text;
 using Nbtc.Network;
 using Version = Nbtc.Network.Version;
@@ -37,20 +38,40 @@ namespace Nbtc.Serialization
         /// 
         /// </summary>
         /// <returns></returns>
-        public Message<T> ReadMessage<T>() where T : IPayload
+        public Message ReadMessage()
         {
-            var magic = ReadMagic();
+            var magic = ReadNetworkId();
             var command = ReadCommand();
-            var payload = ReadPayload<T>(command);
-            
-            return new Message<T>
+            var length = ReadInt32();
+            var checksum = ReadUInt32();
+            var bpayload = ReadBytes(length);
+
+            var checksum2 = Checksum(bpayload);
+
+            if (checksum != checksum2)
             {
-                Magic = magic,
-                Payload = (T)payload
+                throw new InvalidDataException("checksum");
+            }
+            
+            using var mem = new MemoryStream(bpayload);
+            using var reader = new ProtocolReader(mem);
+            var payload = reader.ReadPayload(command);
+            
+            return new Message
+            {
+                NetworkId = magic,
+                Payload = payload
             };
         }
 
-        public IPayload ReadPayload<T>(Command command) where T : IPayload
+        private UInt32 Checksum(byte[] bytes)
+        {
+            var sha = SHA256.Create();
+            var doublesha = sha.ComputeHash(sha.ComputeHash(bytes));
+            return BitConverter.ToUInt32(doublesha, 0);
+        }
+
+        public IPayload ReadPayload(Command command)
         {
             if (command == Command.Version)
             {
@@ -92,9 +113,9 @@ namespace Nbtc.Serialization
             return null;
         }
 
-        public Magic ReadMagic()
+        public Network.NetworkId ReadNetworkId()
         {
-            return (Magic)ReadUInt64();
+            return (Network.NetworkId)ReadUInt32();
         }
     }
 }

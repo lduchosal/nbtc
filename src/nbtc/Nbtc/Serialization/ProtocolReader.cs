@@ -66,5 +66,10 @@ namespace Nbtc.Serialization
             // No data payload
             return new VerAck();
         }
+
+        public byte[] ReadNext()
+        {
+            return ReadBytes(32);
+        }
     }
 }

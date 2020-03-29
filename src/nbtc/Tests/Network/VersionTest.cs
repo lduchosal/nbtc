@@ -22,6 +22,8 @@ namespace Tests.Network
 00000000   10 2f 53 61 74 6f 73 68  69 3a 30 2e 39 2e 39 39   .useragent......
 00000000   2f 2c 9f 04 00 01                                  height.relay.   
     ";
+            
+            
             var hex = new HexDump();
             var original = hex.Decode(dump);
 

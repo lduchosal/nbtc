@@ -9,7 +9,7 @@ namespace Tests
     public class HexDump
     {
         private readonly Regex _re =
-            new Regex(@"^(?<offset>[0-9a-f]{8})\s{3}(?<hexa>[0-9a-f\s]{48})\s{3}(?<dump>.{1,16})$",
+            new Regex(@"^(?<offset>[0-9a-f]+)\s+(?<hexa>[0-9a-f\s]{48,})\s{3,}(?<dump>.+)$",
                 RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         public ReadOnlySpan<byte> Decode(string dump)
