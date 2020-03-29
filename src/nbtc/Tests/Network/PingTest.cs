@@ -26,6 +26,7 @@ namespace Tests.Network
             using var reader = new ProtocolReader(mem2);
             var ping = reader.ReadPing();
             Assert.AreEqual(message.Nonce, ping.Nonce);
+            Assert.AreEqual(Command.Ping, ping.Command);
         }
 
         [TestMethod]
@@ -44,6 +45,7 @@ namespace Tests.Network
             using var reader = new ProtocolReader(mem2);
             var ping = reader.ReadPing();
             Assert.AreEqual(message.Nonce, ping.Nonce);
+            Assert.AreEqual(Command.Ping, ping.Command);
         }
     }
 }

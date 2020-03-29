@@ -50,7 +50,7 @@ namespace Nbtc.Serialization
             };
         }
 
-        private IPayload ReadPayload<T>(Command command) where T : IPayload
+        public IPayload ReadPayload<T>(Command command) where T : IPayload
         {
             if (command == Command.Version)
             {
@@ -92,24 +92,7 @@ namespace Nbtc.Serialization
             return null;
         }
 
-        private Inv ReadInv()
-        {
-            throw new NotImplementedException();
-        }
-        private GetAddr ReadGetAddr()
-        {
-            throw new NotImplementedException();
-        }
-        private GetHeaders ReadGetHeaders()
-        {
-            throw new NotImplementedException();
-        }
-        private VerAck ReadVerAck()
-        {
-            throw new NotImplementedException();
-        }
-
-        private Magic ReadMagic()
+        public Magic ReadMagic()
         {
             return (Magic)ReadUInt64();
         }

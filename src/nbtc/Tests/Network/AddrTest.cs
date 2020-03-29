@@ -26,16 +26,14 @@ namespace Tests.Network
             };
 
             var data = new byte[] {0};
-            using (var mem = new MemoryStream())
+            using var mem = new MemoryStream();
+            using (var writer = new ProtocolWriter(mem))
             {
-                using (var writer = new ProtocolWriter(mem))
-                {
-                    writer.Write(addr);
-                }
-                var expected = hex.Encode(data);
-                var result = hex.Encode(mem.ToArray());
-                Assert.AreEqual(expected, result);
+                writer.Write(addr);
             }
+            var expected = hex.Encode(data);
+            var result = hex.Encode(mem.ToArray());
+            Assert.AreEqual(expected, result);
         }
 
         [TestMethod]
@@ -68,16 +66,14 @@ namespace Tests.Network
                 Addrs = addrs
             };
 
-            using (var mem = new MemoryStream())
+            using var mem = new MemoryStream();
+            using (var writer = new ProtocolWriter(mem))
             {
-                using (var writer = new ProtocolWriter(mem))
-                {
-                    writer.Write(addr);
-                }
-                var expected = hex.Encode(data);
-                var result = hex.Encode(mem.ToArray());
-                Assert.AreEqual(expected, result);
+                writer.Write(addr);
             }
+            var expected = hex.Encode(data);
+            var result = hex.Encode(mem.ToArray());
+            Assert.AreEqual(expected, result);
         }
 
         [TestMethod]
@@ -85,21 +81,16 @@ namespace Tests.Network
         {
 
             var data = new byte[] {0};
-            using (var mem = new MemoryStream(data))
-            using (var reader = new ProtocolReader(mem))
-            {
-                var result = reader.ReadAddr();
-                var addrs = new List<TimedNetworkAddr>();
-                var expected = new Addr {
-                        Addrs = addrs
-                    }
-                    ;
+            using var mem = new MemoryStream(data);
+            using var reader = new ProtocolReader(mem);
+            var result = reader.ReadAddr();
+            var addrs = new List<TimedNetworkAddr>();
+            var expected = new Addr {
+                    Addrs = addrs
+                }
+                ;
 
-                Assert.AreEqual(expected.Addrs.Count, result.Addrs.Count);
-
-            }
-
-
+            Assert.AreEqual(expected.Addrs.Count, result.Addrs.Count);
         }
         
         [TestMethod]
@@ -146,24 +137,21 @@ namespace Tests.Network
 ";
 
             var data = hex.Decode(bytes).ToArray();
-            using (var mem = new MemoryStream(data))
-            using (var reader = new ProtocolReader(mem))
-            {
-                var result = reader.ReadAddr();
+            using var mem = new MemoryStream(data);
+            using var reader = new ProtocolReader(mem);
+            var result = reader.ReadAddr();
                 
-                Assert.AreEqual(expected.Addrs.Count, result.Addrs.Count);
+            Assert.AreEqual(expected.Addrs.Count, result.Addrs.Count);
                 
-                Assert.AreEqual(expected.Addrs[0].Timestamp, result.Addrs[0].Timestamp);
-                Assert.AreEqual(expected.Addrs[0].NetworkAddr.Ip, result.Addrs[0].NetworkAddr.Ip);
-                Assert.AreEqual(expected.Addrs[0].NetworkAddr.Port, result.Addrs[0].NetworkAddr.Port);
-                Assert.AreEqual(expected.Addrs[0].NetworkAddr.Services, result.Addrs[0].NetworkAddr.Services);
+            Assert.AreEqual(expected.Addrs[0].Timestamp, result.Addrs[0].Timestamp);
+            Assert.AreEqual(expected.Addrs[0].NetworkAddr.Ip, result.Addrs[0].NetworkAddr.Ip);
+            Assert.AreEqual(expected.Addrs[0].NetworkAddr.Port, result.Addrs[0].NetworkAddr.Port);
+            Assert.AreEqual(expected.Addrs[0].NetworkAddr.Services, result.Addrs[0].NetworkAddr.Services);
                 
-                Assert.AreEqual(expected.Addrs[1].Timestamp, result.Addrs[1].Timestamp);
-                Assert.AreEqual(expected.Addrs[1].NetworkAddr.Ip, result.Addrs[1].NetworkAddr.Ip);
-                Assert.AreEqual(expected.Addrs[1].NetworkAddr.Port, result.Addrs[1].NetworkAddr.Port);
-                Assert.AreEqual(expected.Addrs[1].NetworkAddr.Services, result.Addrs[1].NetworkAddr.Services);
-
-            }
+            Assert.AreEqual(expected.Addrs[1].Timestamp, result.Addrs[1].Timestamp);
+            Assert.AreEqual(expected.Addrs[1].NetworkAddr.Ip, result.Addrs[1].NetworkAddr.Ip);
+            Assert.AreEqual(expected.Addrs[1].NetworkAddr.Port, result.Addrs[1].NetworkAddr.Port);
+            Assert.AreEqual(expected.Addrs[1].NetworkAddr.Services, result.Addrs[1].NetworkAddr.Services);
         }
     }
 }

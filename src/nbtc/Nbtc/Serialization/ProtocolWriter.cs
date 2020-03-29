@@ -1,8 +1,5 @@
-using System;
 using System.IO;
-using System.Text;
 using Nbtc.Network;
-using Version = Nbtc.Network.Version;
 
 namespace Nbtc.Serialization
 {
@@ -46,5 +43,9 @@ namespace Nbtc.Serialization
             Write(message.Nonce);
         }
 
+        public void Write(VerAck verack)
+        {
+            // No data payload
+        }
     }
 }

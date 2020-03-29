@@ -28,7 +28,6 @@ namespace Nbtc.Network
     ///  </summary>
     public class VerAck : IPayload
     {
-        public byte[] Data { get; set; }
         public Command Command { get { return Command.VerAck;} }
     }
 }

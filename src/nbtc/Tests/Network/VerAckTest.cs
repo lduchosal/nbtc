@@ -7,14 +7,13 @@ using Nbtc.Serialization;
 namespace Tests.Network
 {
     [TestClass]
-    public class PongTest
+    public class VerAckTest
     {
         
         [TestMethod]
-        public void When_Encode_Pong_Then_nothing_To_Encode() {
+        public void When_Encode_VerAck_Then_nothing_To_Encode() {
 
-            var message = new Pong {
-                Nonce =  0
+            var message = new VerAck {
             };
             using var mem = new MemoryStream();
             using (var writer = new ProtocolWriter(mem))
@@ -24,16 +23,15 @@ namespace Tests.Network
 
             using var mem2 = new MemoryStream(mem.ToArray());
             using var reader = new ProtocolReader(mem2);
-            var pong = reader.ReadPong();
-            Assert.AreEqual(message.Nonce, pong.Nonce);
-            Assert.AreEqual(Command.Pong, pong.Command);
+            var verack = reader.ReadVerAck();
+            Assert.IsNotNull(verack);
+            Assert.AreEqual(Command.VerAck, verack.Command);
         }
 
         [TestMethod]
-        public void When_Decode_Pong_one_Then_nothing_To_Encode() {
+        public void When_Decode_VerAck_one_Then_nothing_To_Encode() {
 
-            var message = new Pong {
-                Nonce =  72340172838076673
+            var message = new VerAck {
             };
             using var mem = new MemoryStream();
             using (var writer = new ProtocolWriter(mem))
@@ -43,10 +41,9 @@ namespace Tests.Network
 
             using var mem2 = new MemoryStream(mem.ToArray());
             using var reader = new ProtocolReader(mem2);
-            var pong = reader.ReadPong();
-            Assert.AreEqual(message.Nonce, pong.Nonce);
-            Assert.AreEqual(Command.Pong, pong.Command);
-            
+            var verack = reader.ReadVerAck();
+            Assert.IsNotNull(verack);
+            Assert.AreEqual(Command.VerAck, verack.Command);
         }
     }
 }

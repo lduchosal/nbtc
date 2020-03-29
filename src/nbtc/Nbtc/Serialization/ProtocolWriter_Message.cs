@@ -40,7 +40,7 @@ namespace Nbtc.Serialization
             WritePayload(message.Payload);
         }
 
-        private void WritePayload<T>(T payload) where T : IPayload
+        public void WritePayload<T>(T payload) where T : IPayload
         {
             Write(payload.Command);
             
@@ -82,32 +82,23 @@ namespace Nbtc.Serialization
             }
         }
 
-        private void Write(VerAck payload)
+
+        public void Write(GetHeaders payload)
         {
             throw new NotImplementedException();
         }
 
-        private void Write(GetHeaders payload)
+        public void Write(GetAddr payload)
         {
             throw new NotImplementedException();
         }
 
-        private void Write(GetAddr payload)
-        {
-            throw new NotImplementedException();
-        }
-
-        private void Write(Inv payload)
-        {
-            throw new NotImplementedException();
-        }
-
-        private void Write(Magic magic)
+        public void Write(Magic magic)
         {
             Write((UInt64)magic);
         }
         
-        private void Write(Command command)
+        public void Write(Command command)
         {
             var lcommand = command.ToString().ToLower();
             var scommand = $"{lcommand}\0\0\0\0\0\0\0\0\0\0\0\0";

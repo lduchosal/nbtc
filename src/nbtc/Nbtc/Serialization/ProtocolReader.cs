@@ -50,5 +50,20 @@ namespace Nbtc.Serialization
                 Nonce = nonce
             };
         }
+        
+
+        public GetAddr ReadGetAddr()
+        {
+            throw new NotImplementedException();
+        }
+        public GetHeaders ReadGetHeaders()
+        {
+            throw new NotImplementedException();
+        }
+        public VerAck ReadVerAck()
+        {
+            // No data payload
+            return new VerAck();
+        }
     }
 }
