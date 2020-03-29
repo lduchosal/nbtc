@@ -21,7 +21,6 @@ namespace Nbtc.Network
     /// </summary>
     public class GetAddr : IPayload
     {
-        public byte[] Data { get; set; }
         public Command Command { get { return Command.GetAddr;} }
     }
 }

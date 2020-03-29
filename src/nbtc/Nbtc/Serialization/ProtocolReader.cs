@@ -54,7 +54,8 @@ namespace Nbtc.Serialization
 
         public GetAddr ReadGetAddr()
         {
-            throw new NotImplementedException();
+            // No data payload
+            return new GetAddr();
         }
         public GetHeaders ReadGetHeaders()
         {
