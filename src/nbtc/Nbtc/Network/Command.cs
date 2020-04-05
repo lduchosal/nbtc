@@ -5,11 +5,14 @@
         Version,
         VerAck,
         GetHeaders,
+        SendHeaders,
+        SendCmpct,
         GetAddr,
         Alert,
         Addr,
         Ping,
         Pong,
-        Inv
+        Inv,
+        FeeFilter
     }
 }

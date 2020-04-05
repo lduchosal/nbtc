@@ -1,0 +1,70 @@
+digraph G {
+    
+    //splines="true";
+    rankdir=TB;
+    center=true; 
+    margin=4; 
+    nodesep=1.0; ranksep=0.3;
+    node [shape=ellipse]
+
+    
+    End [style=filled, fillcolor=black peripheries=2];
+    End [shape=circle];
+    End [label=""];
+    End [height=0.3, width=0.3];
+
+    InitialStates [shape=point];
+    InitialStates [height=".3", width=".3"];
+
+    InitialStates -> Init [ label=" " ];
+    Init ;
+    // Init -> End  [ label="   ParseAddrFailed" ]; 
+    // Init -> End  [ label="   RetryFailed" ];
+    Init -> Connect  [ label="   ConnectSocket" ];
+    // Init -> Init  [ label="   ConnectFailed" ];
+    
+    Connect -> VersionSent  [ label="   SendVersion" ]; 
+    // Connect -> End  [ label="   SendVersionFailed" ]; 
+    
+    VersionSent -> VersionReceived  [ label="   ReceiveVersion" ]; 
+    VersionSent -> VersionSent  [ label="   Retry" ]; 
+    // VersionSent -> End  [ label="   ReceiveVersionFailed" ]; 
+    
+    VersionReceived -> VerackReceived  [ label="   ReceiveVerack" ]; 
+    VersionReceived -> VerackSent  [ label="   SendVerack" ]; 
+    // VersionReceived -> End [ label="   ReceiveVerackFailed" ]; 
+    
+    VerackReceived -> VerackSent  [ label="   SendVerack" ]; 
+    // VerackReceived -> End  [ label="   SendVerackFailed" ]; 
+    
+    VerackSent -> Handshake  [ label="   SetVersion" ]; 
+    
+    Handshake -> GetAddr  [  label="   SendGetAddr" ]; 
+    Handshake -> Addr  [  label="   ReceiveAddr" ]; 
+    //Handshake -> Handshake  [ label="   SendGetAddrFailed" ]; 
+    // Handshake -> End  [ label="   SendGetAddrRetryFailed" ]; 
+    
+    GetAddr -> Addr  [ label="   ReceiveAddr" ]; 
+    Handshake -> Handshake  [ dir="backward" label="   ReceiveOther" ]; 
+    GetAddr -> Handshake  [ label="   Timeout" ]; 
+    
+    Addr -> End [ label=" " ];
+
+
+    subgraph cluster0 {
+        node [style=filled,color=white];
+        style=filled;
+        color=white;
+        Init;
+        Connect;
+        VersionSent;
+        VersionReceived;
+        VerackReceived;
+        VerackSent;
+        Handshake;
+        GetAddr;
+        Addr;
+    }
+
+
+}

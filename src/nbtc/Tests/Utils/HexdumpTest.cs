@@ -1,7 +1,8 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Linq;
+﻿using System.Linq;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Nbtc.Util;
 
-namespace Tests
+namespace Tests.Utils
 {
     [TestClass]
     public class HexdumpTest

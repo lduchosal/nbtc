@@ -2,8 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using System.Net.Sockets;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
+using BeetleX.Buffers;
 using Nbtc.Network;
 using Version = Nbtc.Network.Version;
 
@@ -64,6 +67,21 @@ namespace Nbtc.Serialization
             };
         }
 
+        public IEnumerable<Message> ReadMessages()
+        {
+            while (true)
+            {
+                var stream = this.BaseStream as PipeStream;
+                if (stream.Length == 0)
+                {
+                    break;
+                }
+                var message = ReadMessage();
+                yield return message;
+            }
+        }
+
+
         private UInt32 Checksum(byte[] bytes)
         {
             var sha = SHA256.Create();
@@ -109,8 +127,20 @@ namespace Nbtc.Serialization
             {
                 return ReadVerAck();
             }
+            else if (command == Command.SendHeaders)
+            {
+                return ReadSendHeaders();
+            }
+            else if (command == Command.SendCmpct)
+            {
+                return ReadSendCmpct();
+            }
+            else if (command == Command.FeeFilter)
+            {
+                return ReadFeeFilter();
+            }
 
-            return null;
+            throw new NotImplementedException(command.ToString());  
         }
 
         public Network.NetworkId ReadNetworkId()

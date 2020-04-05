@@ -9,7 +9,7 @@ namespace Nbtc.Client
     public class MessageProvider
     {
 
-        public List<Message> version()
+        public List<Message> Version()
         {
 
             var now = (ulong)DateTimeOffset.UtcNow.ToUnixTimeSeconds();
@@ -25,13 +25,13 @@ namespace Nbtc.Client
                     Receiver = new NetworkAddr
                         {
                             Services = Service.Network | Service.Witness | Service.NetworkLimited,
-                            Ip = IPAddress.Parse("::"),
-                            Port = 8333
+                            Ip = IPAddress.Parse("0.0.0.0"),
+                            Port = 0
                         },
                     Sender = new NetworkAddr
                         {
                             Services = Service.Network | Service.Witness | Service.NetworkLimited,
-                            Ip = IPAddress.Parse("::"),
+                            Ip = IPAddress.Parse("0.0.0.0"),
                             Port = 0
                         },
                     Nonce = nonce,
@@ -60,6 +60,22 @@ namespace Nbtc.Client
                 {
                     NetworkId = NetworkId.MainNet,
                     Payload = new GetAddr { }
+                }
+            };
+        }
+
+        public List<Message> Ping()
+        {
+
+            return new List<Message>
+            {
+                new Message
+                {
+                    NetworkId = NetworkId.MainNet,
+                    Payload = new Ping
+                    {
+                        Nonce = 1234
+                    }
                 }
             };
         }

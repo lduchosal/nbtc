@@ -6,6 +6,7 @@ using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Nbtc.Network;
 using Nbtc.Serialization;
+using Nbtc.Util;
 
 namespace Tests.Network
 {

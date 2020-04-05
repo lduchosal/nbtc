@@ -60,8 +60,6 @@ namespace Nbtc.Serialization
             return BitConverter.ToUInt32(doublesha, 0);
         }
 
-        
-
         public void WritePayload(IPayload payload) 
         {
             
@@ -127,7 +125,6 @@ namespace Nbtc.Serialization
         ///
         /// </summary>
         /// <param name="_getaddr"></param>
-        /// <exception cref="NotImplementedException"></exception>
         public void Write(GetAddr _getaddr)
         {
             // No payload data
@@ -146,12 +143,5 @@ namespace Nbtc.Serialization
             Write(bytes, 0, 12);
         }
 
-        public void Write(List<Message> messages)
-        {
-            foreach (var message in messages)
-            {
-                Write(message);
-            }
-        }
     }
 }

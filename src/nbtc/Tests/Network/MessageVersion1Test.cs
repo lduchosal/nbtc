@@ -4,12 +4,13 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Nbtc.Network;
 using System.Net;
 using Nbtc.Serialization;
+using Nbtc.Util;
 using Version = Nbtc.Network.Version;
 
 namespace Tests.Network
 {
     [TestClass]
-    public class Message3Test
+    public class MessageVersion1Test
     {
         [TestMethod]
         public void When_Encode_Decode_Version_Message_Then_Message_Equal()

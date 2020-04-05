@@ -5,8 +5,10 @@ namespace Nbtc.Serialization
 {
     public sealed partial class ProtocolWriter : BinaryWriter
     {
-        public ProtocolWriter(Stream output)
-            : base(output)
+        
+
+        public ProtocolWriter(Stream output, bool leaveOpen = false)
+            : base(output, EncodingCache.UTF8NoBOM, leaveOpen)
         {
         }
 
