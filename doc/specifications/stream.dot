@@ -1,0 +1,64 @@
+digraph G {
+    
+    splines = "true";
+    nodesep = 1.0; 
+    ranksep = 0.3;
+    overlap=scalexy;
+
+    
+    End [style = filled, fillcolor = black, peripheries = 2]
+    End [shape = circle]
+    End [label = ""]
+    End [height = 0.3, width = 0.3]
+
+    Init [shape = point]
+    Init [height = ".3", width = ".3"]
+
+    Init -> None  [label = "   " ]
+
+    None -> Message  [label = "   Bytes >= 24" ]
+    None:n -> None:w  [label = "   Bytes < 24" ]
+    
+    Message:w -> Message:w [label = "   Bytes < Len"]
+    Message -> Checksum [label = "   Bytes >= Len"]
+
+    Checksum -> Payload [label = "   Match"]
+    Checksum -> End [label = "   Mismatch"]
+
+    Payload -> Succeed [label = "   Decoded"]
+    Payload -> End [label = "   Failed"]
+    
+    Succeed -> None [label = "   Bytes"]
+
+
+    subgraph cluster0 {
+        style=filled; color=white
+
+        None
+        Message
+        Payload
+        Checksum
+    }
+    
+    subgraph details {
+        //rank="same";
+        edge[style="invisible",dir="none"];
+
+        Payload -> Message;
+        Payload -> Checksum;
+        Checksum -> Checksum;
+        None -> None;
+        End -> End;
+    }
+
+
+    subgraph ProtocolReader {
+        label = "ProtocolReader"
+        //style=filled; color=white
+
+        Messagess,
+        Message2s
+    }
+
+    
+}
