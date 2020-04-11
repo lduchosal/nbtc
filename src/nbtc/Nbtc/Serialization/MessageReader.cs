@@ -1,18 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Net;
-using System.Net.Sockets;
-using System.Security.Cryptography;
 using System.Text;
 using Nbtc.Network;
-using Version = Nbtc.Network.Version;
 
 namespace Nbtc.Serialization
 {
     public  sealed partial class MessageReader : BinaryReader
     {
-
 
         public MessageReader(Stream output, MessageStateMachine machine, bool leaveOpen = false)
             : base(output, EncodingCache.UTF8NoBOM, leaveOpen)

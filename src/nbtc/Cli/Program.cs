@@ -41,10 +41,10 @@ namespace Cli
                 Console.WriteLine($"AddrReceived : Stopping program");
                 ev.Set();
             };
-            client.ErrorHappend += (o, e) =>
+            client.ErrorHappened += (o, e) =>
             {
-                Console.WriteLine($"ErrorHappend : {e.ToString()}");
-                Console.WriteLine($"ErrorHappend : Stopping program");
+                Console.WriteLine($"ErrorHappened : {e.ToString()}");
+                Console.WriteLine($"ErrorHappened : Stopping program");
                 ev.Set();
             };
             

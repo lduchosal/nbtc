@@ -23,7 +23,7 @@ namespace Nbtc.Client
         public event  EventHandler<List<Message>> MessagesSent = delegate {  };
         public event  EventHandler<string> EventHappened = delegate {  };
         public event  EventHandler<string> AddrReceived = delegate {  };
-        public event  EventHandler<Exception> ErrorHappend = delegate {  };
+        public event  EventHandler<Exception> ErrorHappened = delegate {  };
         
 
         public NbtcClient(MessageProvider message, string hostname, int port)
@@ -64,7 +64,7 @@ namespace Nbtc.Client
 
         private void ClientError(IClient c, ClientErrorArgs e)
         {
-            ErrorHappend(this, e.Error);
+            ErrorHappened(this, e.Error);
         }
 
         private void OnAddr(object sender, EventArgs e)
@@ -144,7 +144,7 @@ namespace Nbtc.Client
             }
             catch (Exception ex)
             {
-                ErrorHappend(this, ex);
+                ErrorHappened(this, ex);
             }
         }
 

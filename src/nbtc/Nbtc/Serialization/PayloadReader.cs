@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using Nbtc.Network;
 
 namespace Nbtc.Serialization
@@ -67,116 +68,67 @@ namespace Nbtc.Serialization
 
         }
         
-        
-        public Alert ReadAlert()
+        public string ReadNullTerminatedString(int len)
         {
-            var varlen = ReadVarInt();
-            var bytes = ReadBytes((int)varlen.Value);
-
-            return new Alert
+            var bytes = ReadBytes(len);
+            var bstring = new List<byte>();
+            for (int i = 0; i < len; i++)
             {
-                Data = bytes
-            };
-        }
-
-        public Ping ReadPing()
-        {
-            var nonce = ReadUInt64();
-            return new Ping
-            {
-                Nonce = nonce
-            };
-        }
-
-        public Pong ReadPong()
-        {
-            var nonce = ReadUInt64();
-            return new Pong
-            {
-                Nonce = nonce
-            };
-        }
-        public SendCmpct ReadSendCmpct()
-        {
-            var sendcmpct = ReadByte();
-            var version = ReadUInt64();
-            return new SendCmpct
-            {
-                Compatible = sendcmpct,
-                Version = version
-            };
-        }
-        
-        public FeeFilter ReadFeeFilter()
-        {
-            var feerate = ReadUInt64();
-            return new FeeFilter
-            {
-                FeeRate = feerate,
-            };
-        }
-
-        public NotImplementedCommand NotImplementedCommand(Command command)
-        {
-            return new NotImplementedCommand
-            {
-                Command = command,
-            };
-        }
-        
-        
-
-        public GetAddr ReadGetAddr()
-        {
-            // No data payload
-            return new GetAddr();
-        }
-        public GetHeaders ReadGetHeaders()
-        {
-            var version = ReadUInt16();
-            var varint = ReadVarInt();
-            var hashes = new List<Sha256>();
-            for (ulong i = 0; i < varint.Value; i++)
-            {
-                var bytes = ReadBytes(32);
-                var sha = new Sha256();
-                hashes.Add(sha);
+                if (bytes[i] == 0x00) break;
+                bstring.Add(bytes[i]);
             }
-            var stopbytes = ReadBytes(32);
-            var stop = new Sha256();
+            return Encoding.ASCII.GetString(bstring.ToArray());
+        }
 
-            return new GetHeaders
+        public string ReadVarString()
+        {
+            var len = ReadByte();
+            var content = ReadBytes(len);
+            return Encoding.ASCII.GetString(content);
+        }
+        
+        
+        /// <summary>
+        /// https://en.bitcoin.it/wiki/Protocol_documentation#Transaction_Verification
+        /// 
+        /// Variable length integer
+        /// Integer can be encoded depending on the represented value to save space. 
+        /// Variable length integers always precede an array/vector of a type of data 
+        /// that may vary in length. Longer numbers are encoded in little endian.
+        /// 
+        /// +----------------+-----------------+----------------------------------------------+
+        /// | Value          | Storage length  |  Format                                      |
+        /// +----------------+-----------------+----------------------------------------------+
+        /// | < 0xFD         | 1               |  uint8_t                                     |
+        /// +----------------+-----------------+----------------------------------------------+
+        /// | <= 0xFFFF      | 3               |  0xFD followed by the length as uint16_t     |
+        /// +----------------+-----------------+----------------------------------------------+
+        /// | <= 0xFFFF FFFF | 5               |  0xFE followed by the length as uint32_t     |
+        /// +----------------+-----------------+----------------------------------------------+
+        /// | -              | 9               |  0xFF followed by the length as uint64_t     |
+        /// +----------------+-----------------+----------------------------------------------+
+        /// 
+        /// If you're reading the Satoshi client code (BitcoinQT) it refers to this 
+        /// encoding as a "CompactSize". Modern BitcoinQT also has the CVarInt class 
+        /// which implements an even more compact integer for the purpose of local 
+        /// storage (which is incompatible with "CompactSize" described here). 
+        /// CVarInt is not a part of the protocol.
+        /// </summary>
+        /// <returns></returns>
+        public VarInt ReadVarInt()
+        {
+            var varlen = ReadByte();
+            UInt64 value =
+                varlen == 0xFD ? ReadUInt16()
+                : varlen == 0xFE ? ReadUInt32()
+                : varlen == 0xFF ? ReadUInt64()
+                : varlen;
+            
+            return new VarInt
             {
-                version = version,
-                Locators = hashes,
-                Stop = stop
+                Value = value
             };
         }
-        public VerAck ReadVerAck()
-        {
-            // No data payload
-            return new VerAck();
-        }
-        public SendHeaders ReadSendHeaders()
-        {
-            // No data payload
-            return new SendHeaders();
-        }
-        //
-        // public byte[] ReadNext()
-        // {
-        //     var buffer = new byte[1024];
-        //     int read = -1;
-        //     var mem = new MemoryStream();
-        //     var stream = this.BaseStream as BufferedStream;
-        //     
-        //     while(stream != null && stream.CanRead)
-        //     {
-        //         read = Read(buffer, 0, buffer.Length);
-        //         mem.Write(buffer, 0, read);
-        //     } 
-        //
-        //     return mem.ToArray();
-        // }
+
     }
 }
