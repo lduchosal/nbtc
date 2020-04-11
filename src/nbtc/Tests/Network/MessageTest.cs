@@ -14,7 +14,7 @@ namespace Tests.Network
         public void When_Encode_Message_Then_nothing_To_Encode() {
 
             var message = new Message {
-                NetworkId = Nbtc.Network.NetworkId.MainNet,
+                Magic = Nbtc.Network.NetworkId.MainNet,
                 Payload = new Ping
                 {
                     Nonce = 0
@@ -25,14 +25,15 @@ namespace Tests.Network
             {
                 writer.Write(message);
             }
-
+            var state = new MessageStateMachine();
+            
             using var mem2 = new MemoryStream(mem.ToArray());
-            using var reader = new ProtocolReader(mem2);
+            using var reader = new MessageReader(mem2, state);
             var result = reader.ReadMessage();
             var mpayload = message.Payload as Ping;
             var rpayload = result.Payload as Ping;
 
-            Assert.AreEqual(message.NetworkId, result.NetworkId);
+            Assert.AreEqual(message.Magic, result.Magic);
             Assert.AreEqual(mpayload.Nonce, rpayload.Nonce);
         }
 
@@ -40,7 +41,7 @@ namespace Tests.Network
         public void When_Decode_Message_Then_nothing_To_Encode() {
 
             var message = new Message {
-                NetworkId = Nbtc.Network.NetworkId.MainNet,
+                Magic = Nbtc.Network.NetworkId.MainNet,
                 Payload = new Pong
                 {
                     Nonce = 0
@@ -51,14 +52,15 @@ namespace Tests.Network
             {
                 writer.Write(message);
             }
+            var state = new MessageStateMachine();
 
             using var mem2 = new MemoryStream(mem.ToArray());
-            using var reader = new ProtocolReader(mem2);
+            using var reader = new MessageReader(mem2, state);
             var result = reader.ReadMessage();
             var mpayload = message.Payload as Pong;
             var rpayload = result.Payload as Pong;
 
-            Assert.AreEqual(message.NetworkId, result.NetworkId);
+            Assert.AreEqual(message.Magic, result.Magic);
             Assert.AreEqual(mpayload.Nonce, rpayload.Nonce);
         }
 
@@ -67,7 +69,7 @@ namespace Tests.Network
         public void When_Encode_Decode_Alert_Suceed() {
 
             var message = new Message {
-                NetworkId = Nbtc.Network.NetworkId.MainNet,
+                Magic = Nbtc.Network.NetworkId.MainNet,
                 Payload = new Alert
                 {
                     Data = new byte [0]
@@ -79,13 +81,14 @@ namespace Tests.Network
                 writer.Write(message);
             }
 
+            var state = new MessageStateMachine();
             using var mem2 = new MemoryStream(mem.ToArray());
-            using var reader = new ProtocolReader(mem2);
+            using var reader = new MessageReader(mem2, state);
             var result = reader.ReadMessage();
 
             var mpayload = message.Payload as Alert;
             var rpayload = result.Payload as Alert;
-            Assert.AreEqual(message.NetworkId, result.NetworkId);
+            Assert.AreEqual(message.Magic, result.Magic);
             Assert.AreEqual(mpayload.Data.Length, rpayload.Data.Length);
         }
 
@@ -93,7 +96,7 @@ namespace Tests.Network
         public void When_Encode_Decode_Version_Suceed() {
 
             var message = new Message {
-                NetworkId = Nbtc.Network.NetworkId.MainNet,
+                Magic = Nbtc.Network.NetworkId.MainNet,
                 Payload = new Version
                 {
                     Nonce = 1,
@@ -123,14 +126,15 @@ namespace Tests.Network
                 writer.Write(message);
             }
 
+            var state = new MessageStateMachine();
             using var mem2 = new MemoryStream(mem.ToArray());
-            using var reader = new ProtocolReader(mem2);
+            using var reader = new MessageReader(mem2, state);
             var result = reader.ReadMessage();
             
             var mpayload = message.Payload as Version;
             var rpayload = result.Payload as Version;
             
-            Assert.AreEqual(message.NetworkId, result.NetworkId);
+            Assert.AreEqual(message.Magic, result.Magic);
             Assert.AreEqual(mpayload.Receiver.Ip, rpayload.Receiver.Ip);
             Assert.AreEqual(mpayload.Receiver.Port, rpayload.Receiver.Port);
             Assert.AreEqual(mpayload.Receiver.Services, rpayload.Receiver.Services);

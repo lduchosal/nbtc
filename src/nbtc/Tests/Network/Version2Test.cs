@@ -81,7 +81,7 @@ namespace Tests.Network
             using (var read = new MemoryStream(original.ToArray()))
             using (var write = new MemoryStream())
             {
-                using (var reader = new ProtocolReader(read))
+                using (var reader = new PayloadReader(read))
                 using (var writer = new ProtocolWriter(write))
                 {
                     var version = reader.ReadVersion();

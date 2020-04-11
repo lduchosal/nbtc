@@ -28,7 +28,12 @@ namespace Nbtc.Network
     /// </summary>
     public class Message
     {
-        public NetworkId NetworkId { get; set; }
+        public NetworkId Magic { get; set; }
+        public Command Command { get; set; }
+        public int Length { get; set; }
+        public uint Checksum { get; set; }
+        
+        public byte[] BPayload { get; set; }
         public IPayload Payload { get; set; }
     }
     

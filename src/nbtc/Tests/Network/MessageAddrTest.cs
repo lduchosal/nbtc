@@ -1948,9 +1948,10 @@ T 134.209.250.30:8333 -> 10.0.3.133:61134 [AP]
            
            var hex = new HexDump();
            var original = hex.Decode(dump);
-
-           using var read = new MemoryStream(original.ToArray());
-           using var reader = new ProtocolReader(read);
+           var state = new MessageStateMachine();
+            
+           using var mem = new MemoryStream(original.ToArray());
+           using var reader = new MessageReader(mem, state);
            var message = reader.ReadMessage();
            var addr = message.Payload as Addr;
 

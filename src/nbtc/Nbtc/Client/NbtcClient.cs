@@ -16,6 +16,7 @@ namespace Nbtc.Client
     public class NbtcClient
     {
         private readonly AsyncTcpClient _client;
+        private readonly MessageStateMachine _state = new MessageStateMachine();
         private readonly MessageProvider _message;
         private readonly NodeWalker _nodewalker;
         public event  EventHandler<Message> MessageReceived = delegate {  };
@@ -40,12 +41,30 @@ namespace Nbtc.Client
             nodewalker.OnUnhandledTrigger += OnUnhandledTrigger;
             
             var client = SocketFactory.CreateClient<AsyncTcpClient>(hostname, port);
+            client.Connected += Connected;
+            client.Disconnected += Disconnected;
             client.DataReceive += DataReceive;
+            client.ClientError += ClientError;
             
             _client = client;
             _message = message;
             _nodewalker = nodewalker;
 
+        }
+
+        private void Disconnected(IClient c)
+        {
+            EventHappened(this, "Disconnected");
+        }
+
+        private void Connected(IClient c)
+        {
+            EventHappened(this, "Connected");
+        }
+
+        private void ClientError(IClient c, ClientErrorArgs e)
+        {
+            ErrorHappend(this, e.Error);
         }
 
         private void OnAddr(object sender, EventArgs e)
@@ -71,11 +90,8 @@ namespace Nbtc.Client
         private void OnGetAddr(object sender, EventArgs e)
         {
             EventHappened(this, "OnGetAddr");
-            Task.Factory.StartNew(() =>
-            {
-                Thread.Sleep(10000);
-                _nodewalker.Timeout();
-            });
+            // Thread.Sleep(10000);
+            // _nodewalker.Timeout();
         }
         private void OnVerackReceived(object sender, EventArgs e)
         {
@@ -116,10 +132,11 @@ namespace Nbtc.Client
         {
             try
             {
-                using (var reader = new ProtocolReader(e.Stream, true))
+                Console.WriteLine($"[{Thread.CurrentThread.ManagedThreadId}] NbtcClient DataReceive");
+                Console.WriteLine($"[{Thread.CurrentThread.ManagedThreadId}] NbtcClient DataReceive [len: {e.Stream.Length}]");
+                using (var reader = new MessageReader(e.Stream, _state, true))
                 {
-                    var messages = reader.ReadMessages();
-                    foreach (var message in messages)
+                    foreach (var message in reader.ReadMessages())
                     {
                         MessageReceive(message);
                     }

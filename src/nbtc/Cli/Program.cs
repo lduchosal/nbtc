@@ -38,11 +38,13 @@ namespace Cli
             client.AddrReceived += (o, e) =>
             {
                 Console.WriteLine($"AddrReceived : {e}");
+                Console.WriteLine($"AddrReceived : Stopping program");
                 ev.Set();
             };
             client.ErrorHappend += (o, e) =>
             {
                 Console.WriteLine($"ErrorHappend : {e.ToString()}");
+                Console.WriteLine($"ErrorHappend : Stopping program");
                 ev.Set();
             };
             

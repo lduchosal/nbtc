@@ -88,9 +88,10 @@ namespace Tests.Network
            
            var hex = new HexDump();
            var original = hex.Decode(dump);
-
-           using var read = new MemoryStream(original.ToArray());
-           using var reader = new ProtocolReader(read);
+           var state = new MessageStateMachine();
+            
+           using var mem = new MemoryStream(original.ToArray());
+           using var reader = new MessageReader(mem, state);
            var message = reader.ReadMessage();
            var getheaders = message.Payload as GetHeaders;
 

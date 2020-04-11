@@ -1,28 +1,72 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Net;
-using System.Net.Sockets;
-using System.Security.Cryptography;
-using System.Text;
 using Nbtc.Network;
-using Version = Nbtc.Network.Version;
 
 namespace Nbtc.Serialization
 {
-    public  sealed partial class ProtocolReader : BinaryReader
+    public partial class PayloadReader : BinaryReader
     {
-        public ProtocolReader(Stream output, bool leaveOpen = false)
+        public PayloadReader(Stream output, bool leaveOpen = false)
             : base(output, EncodingCache.UTF8NoBOM, leaveOpen)
         {
         }
 
-        public Command ReadCommand()
+        public IPayload ReadPayload(Command command)
         {
-            var scommand = ReadNullTerminatedString(12);
-            var command = (Command) Enum.Parse(typeof(Command), scommand, true);
-            return command;
+            if (command == Command.Version)
+            {
+                return ReadVersion();
+            }
+            else if (command == Command.Ping)
+            {
+                return ReadPing();
+            }
+            else if (command == Command.Pong)
+            {
+                return ReadPong();
+            }
+            else if (command == Command.Alert)
+            {
+                return ReadAlert();
+            }
+            else if (command == Command.Addr)
+            {
+                return ReadAddr();
+            }
+            else if (command == Command.Inv)
+            {
+                return ReadInv();
+            }
+            else if (command == Command.GetAddr)
+            {
+                return ReadGetAddr();
+            }
+            else if (command == Command.GetHeaders)
+            {
+                return ReadGetHeaders();
+            }
+            else if (command == Command.VerAck)
+            {
+                return ReadVerAck();
+            }
+            else if (command == Command.SendHeaders)
+            {
+                return ReadSendHeaders();
+            }
+            else if (command == Command.SendCmpct)
+            {
+                return ReadSendCmpct();
+            }
+            else if (command == Command.FeeFilter)
+            {
+                return ReadFeeFilter();
+            }
+
+            return NotImplementedCommand(command);
+
         }
+        
         
         public Alert ReadAlert()
         {
@@ -71,7 +115,14 @@ namespace Nbtc.Serialization
                 FeeRate = feerate,
             };
         }
-        
+
+        public NotImplementedCommand NotImplementedCommand(Command command)
+        {
+            return new NotImplementedCommand
+            {
+                Command = command,
+            };
+        }
         
         
 
@@ -111,21 +162,21 @@ namespace Nbtc.Serialization
             // No data payload
             return new SendHeaders();
         }
-        
-        public byte[] ReadNext()
-        {
-            var buffer = new byte[1024];
-            int read = -1;
-            var mem = new MemoryStream();
-            var stream = this.BaseStream as BufferedStream;
-            
-            while(stream != null && stream.CanRead)
-            {
-                read = Read(buffer, 0, buffer.Length);
-                mem.Write(buffer, 0, read);
-            } 
-
-            return mem.ToArray();
-        }
+        //
+        // public byte[] ReadNext()
+        // {
+        //     var buffer = new byte[1024];
+        //     int read = -1;
+        //     var mem = new MemoryStream();
+        //     var stream = this.BaseStream as BufferedStream;
+        //     
+        //     while(stream != null && stream.CanRead)
+        //     {
+        //         read = Read(buffer, 0, buffer.Length);
+        //         mem.Write(buffer, 0, read);
+        //     } 
+        //
+        //     return mem.ToArray();
+        // }
     }
 }

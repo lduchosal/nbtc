@@ -20,7 +20,7 @@ namespace Tests.Network
             var data = new byte[] {0x00, 0x00, 0x00, 0x00};
 
             using var mem = new MemoryStream(data);
-            using (var reader = new ProtocolReader(mem)) {
+            using (var reader = new PayloadReader(mem)) {
                 var varint = reader.ReadVarInt();
                 var result = varint.Value;
                 Assert.AreEqual(result,(UInt64)0x00);
@@ -34,7 +34,7 @@ namespace Tests.Network
 
             var data = new byte[] {0xfc, 0x00, 0x00, 0x00 };
             using var mem = new MemoryStream(data);
-            using (var reader = new ProtocolReader(mem))
+            using (var reader = new PayloadReader(mem))
             {
                 var varint = reader.ReadVarInt();
                 var result = varint.Value;
@@ -49,7 +49,7 @@ namespace Tests.Network
 
             var data = new byte[] {0xfd, 0xfe, 0x00, 0x00};
             using var mem = new MemoryStream(data);
-            using (var reader = new ProtocolReader(mem))
+            using (var reader = new PayloadReader(mem))
             {
                 var varint = reader.ReadVarInt();
                 var result = varint.Value;
@@ -64,7 +64,7 @@ namespace Tests.Network
 
             var data = new byte[] {0xfd, 0xfe, 0x01, 0x00};
             using var mem = new MemoryStream(data);
-            using (var reader = new ProtocolReader(mem))
+            using (var reader = new PayloadReader(mem))
             {
                 var varint = reader.ReadVarInt();
                 var result = varint.Value;
@@ -80,7 +80,7 @@ namespace Tests.Network
 
             var data = new byte[] {0xfe, 0x03, 0x02, 0x01, 0x00};
             using var mem = new MemoryStream(data);
-            using (var reader = new ProtocolReader(mem))
+            using (var reader = new PayloadReader(mem))
             {
                 var varint = reader.ReadVarInt();
                 var result = varint.Value;
@@ -95,7 +95,7 @@ namespace Tests.Network
 
             var data = new byte[] {0xff, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x01, 0x00};
             using var mem = new MemoryStream(data);
-            using (var reader = new ProtocolReader(mem))
+            using (var reader = new PayloadReader(mem))
             {
                 var varint = reader.ReadVarInt();
                 var result = varint.Value;
@@ -111,7 +111,7 @@ namespace Tests.Network
 
             var data = new byte[] {0xff, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02};
             using var mem = new MemoryStream(data);
-            using var reader = new ProtocolReader(mem);
+            using var reader = new PayloadReader(mem);
 
             Assert.ThrowsException<EndOfStreamException>(reader.ReadVarInt);
 
@@ -123,7 +123,7 @@ namespace Tests.Network
         {
             var data = new byte[] {0xfe, 0x07, 0x06, 0x05};
             using var mem = new MemoryStream(data);
-            using var reader = new ProtocolReader(mem);
+            using var reader = new PayloadReader(mem);
             Assert.ThrowsException<EndOfStreamException>(reader.ReadVarInt);
 
         }
@@ -133,7 +133,7 @@ namespace Tests.Network
         {
             var data = new byte[] {0xfd, 0x07};
             using var mem = new MemoryStream(data);
-            using var reader = new ProtocolReader(mem);
+            using var reader = new PayloadReader(mem);
             Assert.ThrowsException<EndOfStreamException>(reader.ReadVarInt);
         }
 

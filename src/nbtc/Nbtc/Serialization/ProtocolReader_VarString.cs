@@ -8,7 +8,7 @@ using Version = Nbtc.Network.Version;
 
 namespace Nbtc.Serialization
 {
-    public  sealed partial class ProtocolReader 
+    public  sealed partial class PayloadReader 
     {
         public string ReadVarString()
         {

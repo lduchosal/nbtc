@@ -13,6 +13,7 @@
         Ping,
         Pong,
         Inv,
-        FeeFilter
+        FeeFilter,
+        Unknwon
     }
 }

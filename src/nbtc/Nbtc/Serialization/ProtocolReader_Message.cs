@@ -1,19 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Net;
-using System.Net.Sockets;
 using System.Security.Cryptography;
-using System.Text;
-using System.Threading;
-using BeetleX.Buffers;
 using Nbtc.Network;
-using Version = Nbtc.Network.Version;
 
 namespace Nbtc.Serialization
 {
-    public  sealed partial class ProtocolReader 
+    public  sealed partial class MessageReader
     {
+
+        private readonly MessageStateMachine _machine;
 
         /// <summary>
         /// https://en.bitcoin.it/wiki/Protocol_documentation
@@ -41,47 +37,124 @@ namespace Nbtc.Serialization
         /// 
         /// </summary>
         /// <returns></returns>
-        public Message ReadMessage()
+        
+        public IEnumerable<Message> ReadMessages()
         {
+
+            while (this.BaseStream.Length > 0)
+            {
+                long length = this.BaseStream.Length;
+                
+                Console.WriteLine($"ReadMessages [StateMachine : {_machine.State}]");
+                var result = _machine.Bytes(length);
+                Console.WriteLine($"ReadMessages [StateMachine : {_machine.State}]");
+                Console.WriteLine($"ReadMessages [result : {result.Statut}]");
+
+                if (result.Statut == MessageStatut.Failed)
+                {
+                    throw new InvalidDataException(result.Error);
+                }
+                else if (result.Statut == MessageStatut.Succeed)
+                {
+                    yield return result.Message;
+                }
+                else if (result.Statut == MessageStatut.Missing)
+                {
+                    yield break;
+                }
+            }
+        }
+        private void OnUnHandled(object sender, string unhandled)
+        {
+            Console.WriteLine($"OnUnHandled [unhandled: {unhandled}]");
+            throw new InvalidProgramException(unhandled);
+        }
+        
+        private void OnMessage(object sender, MessageEventArgs mea)
+        {
+            if (this.BaseStream.Length < 24)
+            {
+                mea.Result = MessageStatut.Missing;
+                return;
+            }
+
             var magic = ReadNetworkId();
             var command = ReadCommand();
             var length = ReadInt32();
             var checksum = ReadUInt32();
+
+            Console.WriteLine($"OnMessage [magic: {magic}]");
+            Console.WriteLine($"OnMessage [command: {command}]");
+            Console.WriteLine($"OnMessage [length: {length}]");
+            Console.WriteLine($"OnMessage [checksum: {checksum}]");
+
+            if (command == Command.Unknwon)
+            {
+                throw new InvalidProgramException();
+            }
+
+            mea.Message.Magic = magic;
+            mea.Message.Command = command;
+            mea.Message.Length = length;
+            mea.Message.Checksum = checksum;
+            
+            mea.Result = MessageStatut.Succeed;
+            mea.Length = this.BaseStream.Length;
+
+        }
+
+        private void OnChecksum(object sender, MessageEventArgs mea)
+        {
+            var length = mea.Message.Length;
+            if (this.BaseStream.Length < length)
+            {
+                mea.Result = MessageStatut.Missing;
+                return;
+            }
+
             var bpayload = ReadBytes(length);
+            var blength = bpayload.Length;
+            if (blength != length)
+            {
+                Console.WriteLine($"OnChecksum [length: {length}]");
+                Console.WriteLine($"OnChecksum [blength: {blength}]");
+                mea.Result = MessageStatut.Failed;
+                return;
+            }
 
+            var checksum = mea.Message.Checksum;
             var checksum2 = Checksum(bpayload);
-
             if (checksum != checksum2)
             {
-                throw new InvalidDataException("checksum");
+                Console.WriteLine($"OnChecksum [checksum: {checksum}]");
+                Console.WriteLine($"OnChecksum [checksum2: {checksum2}]");
+
+                mea.Result = MessageStatut.Failed;
+                return;
             }
             
-            using var mem = new MemoryStream(bpayload);
-            using var reader = new ProtocolReader(mem);
-            var payload = reader.ReadPayload(command);
-            
-            return new Message
-            {
-                NetworkId = magic,
-                Payload = payload
-            };
+            mea.Message.BPayload = bpayload;
+            mea.Result = MessageStatut.Succeed;
+
         }
 
-        public IEnumerable<Message> ReadMessages()
+        private void OnPayload(object sender, MessageEventArgs mea) 
         {
-            while (true)
+            var command = mea.Message.Command;
+            using var mem = new MemoryStream(mea.Message.BPayload);
+            using var reader = new PayloadReader(mem);
+            var payload = reader.ReadPayload(command);
+
+            if (payload is NotImplementedCommand)
             {
-                var stream = this.BaseStream as PipeStream;
-                if (stream.Length == 0)
-                {
-                    break;
-                }
-                var message = ReadMessage();
-                yield return message;
+                mea.Result = MessageStatut.Failed;
+                return;
             }
+            
+            mea.Message.Payload = payload;
+            mea.Result = MessageStatut.Succeed;
         }
-
-
+        
         private UInt32 Checksum(byte[] bytes)
         {
             var sha = SHA256.Create();
@@ -89,59 +162,6 @@ namespace Nbtc.Serialization
             return BitConverter.ToUInt32(doublesha, 0);
         }
 
-        public IPayload ReadPayload(Command command)
-        {
-            if (command == Command.Version)
-            {
-                return ReadVersion();
-            }
-            else if (command == Command.Ping)
-            {
-                return ReadPing();
-            }
-            else if (command == Command.Pong)
-            {
-                return ReadPong();
-            }
-            else if (command == Command.Alert)
-            {
-                return ReadAlert();
-            }
-            else if (command == Command.Addr)
-            {
-                return ReadAddr();
-            }
-            else if (command == Command.Inv)
-            {
-                return ReadInv();
-            }
-            else if (command == Command.GetAddr)
-            {
-                return ReadGetAddr();
-            }
-            else if (command == Command.GetHeaders)
-            {
-                return ReadGetHeaders();
-            }
-            else if (command == Command.VerAck)
-            {
-                return ReadVerAck();
-            }
-            else if (command == Command.SendHeaders)
-            {
-                return ReadSendHeaders();
-            }
-            else if (command == Command.SendCmpct)
-            {
-                return ReadSendCmpct();
-            }
-            else if (command == Command.FeeFilter)
-            {
-                return ReadFeeFilter();
-            }
-
-            throw new NotImplementedException(command.ToString());  
-        }
 
         public Network.NetworkId ReadNetworkId()
         {

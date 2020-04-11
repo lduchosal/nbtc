@@ -38,7 +38,7 @@ namespace Nbtc.Serialization
         /// <param name="message"></param>
         public void Write(Message message)
         {
-            Write(message.NetworkId);
+            Write(message.Magic);
             var payload = message.Payload;
             
             using var mem = new MemoryStream();

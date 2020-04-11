@@ -24,7 +24,7 @@ namespace Tests.Network
             }
 
             using var mem2 = new MemoryStream(mem.ToArray());
-            using var reader = new ProtocolReader(mem2);
+            using var reader = new PayloadReader(mem2);
             var getaddr = reader.ReadGetAddr();
             Assert.IsNotNull(getaddr);
             Assert.AreEqual(Command.GetAddr, getaddr.Command);
@@ -42,7 +42,7 @@ namespace Tests.Network
             }
 
             using var mem2 = new MemoryStream(mem.ToArray());
-            using var reader = new ProtocolReader(mem2);
+            using var reader = new PayloadReader(mem2);
             var getaddr = reader.ReadGetAddr();
             Assert.IsNotNull(getaddr);
             Assert.AreEqual(Command.GetAddr, getaddr.Command);

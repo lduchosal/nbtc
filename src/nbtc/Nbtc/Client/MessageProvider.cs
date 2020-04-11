@@ -45,7 +45,7 @@ namespace Nbtc.Client
             {
                 new Message
                 {
-                    NetworkId = NetworkId.MainNet,
+                    Magic = NetworkId.MainNet,
                     Payload = version
                 }
             };
@@ -58,7 +58,7 @@ namespace Nbtc.Client
             {
                 new Message
                 {
-                    NetworkId = NetworkId.MainNet,
+                    Magic = NetworkId.MainNet,
                     Payload = new GetAddr { }
                 }
             };
@@ -71,7 +71,7 @@ namespace Nbtc.Client
             {
                 new Message
                 {
-                    NetworkId = NetworkId.MainNet,
+                    Magic = NetworkId.MainNet,
                     Payload = new Ping
                     {
                         Nonce = 1234
@@ -87,7 +87,7 @@ namespace Nbtc.Client
             {
                 new Message
                 {
-                    NetworkId = NetworkId.MainNet,
+                    Magic = NetworkId.MainNet,
                     Payload = new VerAck { }
                 }
             };

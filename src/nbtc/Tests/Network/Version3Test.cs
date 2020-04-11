@@ -28,7 +28,7 @@ namespace Tests.Network
             var original = hex.Decode(dump);
 
             using var read = new MemoryStream(original.ToArray());
-            using var reader = new ProtocolReader(read);
+            using var reader = new PayloadReader(read);
             var version = reader.ReadVersion();
 
             Assert.AreEqual(70002, version.Vversion);

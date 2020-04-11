@@ -18,13 +18,12 @@ namespace Tests.Network
 
             var hex = new HexDump();
             var original = hex.Decode(dump);
-
-            using (var mem = new MemoryStream(original.ToArray()))
-            using (var reader = new ProtocolReader(mem))
-            {
-                var result = reader.ReadCommand();
-                Assert.AreEqual(Command.GetAddr, result);
-            }
+            var state = new MessageStateMachine();
+            
+            using var mem = new MemoryStream(original.ToArray());
+            using var reader = new MessageReader(mem, state);
+            var result = reader.ReadCommand();
+            Assert.AreEqual(Command.GetAddr, result);
         }
 
         [TestMethod]
@@ -36,9 +35,10 @@ namespace Tests.Network
             // This message is from a satoshi node, morning of May 27 2014
             var hex = new HexDump();
             var original = hex.Decode(dump);
+            var state = new MessageStateMachine();
 
-            var mem = new MemoryStream(original.ToArray());
-            var reader = new ProtocolReader(mem);
+            using var mem = new MemoryStream(original.ToArray());
+            using var reader = new MessageReader(mem, state);
             var command = reader.ReadCommand();
             var expected = Command.Version;
 

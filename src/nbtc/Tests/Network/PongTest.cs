@@ -23,7 +23,7 @@ namespace Tests.Network
             }
 
             using var mem2 = new MemoryStream(mem.ToArray());
-            using var reader = new ProtocolReader(mem2);
+            using var reader = new PayloadReader(mem2);
             var pong = reader.ReadPong();
             Assert.AreEqual(message.Nonce, pong.Nonce);
             Assert.AreEqual(Command.Pong, pong.Command);
@@ -42,7 +42,7 @@ namespace Tests.Network
             }
 
             using var mem2 = new MemoryStream(mem.ToArray());
-            using var reader = new ProtocolReader(mem2);
+            using var reader = new PayloadReader(mem2);
             var pong = reader.ReadPong();
             Assert.AreEqual(message.Nonce, pong.Nonce);
             Assert.AreEqual(Command.Pong, pong.Command);

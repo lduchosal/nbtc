@@ -213,7 +213,7 @@ namespace Tests.Network
 
             var data = new byte[] {0};
             using (var mem = new MemoryStream(data))
-            using (var reader = new ProtocolReader(mem))
+            using (var reader = new PayloadReader(mem))
             {
                 var result = reader.ReadAlert();
                 var alerts = new byte [0];

@@ -23,13 +23,13 @@ namespace Tests.Client
             client.MessageReceived += (o, e) =>
             {
                 var command = e.Payload.Command;
-                Console.WriteLine($"NetworkId : {e.NetworkId}");
+                Console.WriteLine($"NetworkId : {e.Magic}");
                 Console.WriteLine($"Command: {command}");
             };
             client.MessageReceived += (o, e) =>
             {
                 var command = e.Payload.Command;
-                Console.WriteLine($"NetworkId : {e.NetworkId}");
+                Console.WriteLine($"NetworkId : {e.Magic}");
                 Console.WriteLine($"Command: {command}");
             };
             client.EventHappened += (o, e) =>

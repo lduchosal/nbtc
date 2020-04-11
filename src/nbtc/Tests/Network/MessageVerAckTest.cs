@@ -23,8 +23,9 @@ namespace Tests.Network
             var hex = new HexDump();
             var original = hex.Decode(dump);
 
+            var state = new MessageStateMachine();
             using var read = new MemoryStream(original.ToArray());
-            using var reader = new ProtocolReader(read);
+            using var reader = new MessageReader(read, state);
             var message = reader.ReadMessage();
             var verAck = message.Payload as VerAck;
 

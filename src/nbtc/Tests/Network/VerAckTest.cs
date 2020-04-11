@@ -22,7 +22,7 @@ namespace Tests.Network
             }
 
             using var mem2 = new MemoryStream(mem.ToArray());
-            using var reader = new ProtocolReader(mem2);
+            using var reader = new PayloadReader(mem2);
             var verack = reader.ReadVerAck();
             Assert.IsNotNull(verack);
             Assert.AreEqual(Command.VerAck, verack.Command);
@@ -40,7 +40,7 @@ namespace Tests.Network
             }
 
             using var mem2 = new MemoryStream(mem.ToArray());
-            using var reader = new ProtocolReader(mem2);
+            using var reader = new PayloadReader(mem2);
             var verack = reader.ReadVerAck();
             Assert.IsNotNull(verack);
             Assert.AreEqual(Command.VerAck, verack.Command);

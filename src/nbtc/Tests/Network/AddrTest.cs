@@ -83,7 +83,7 @@ namespace Tests.Network
 
             var data = new byte[] {0};
             using var mem = new MemoryStream(data);
-            using var reader = new ProtocolReader(mem);
+            using var reader = new PayloadReader(mem);
             var result = reader.ReadAddr();
             var addrs = new List<TimedNetworkAddr>();
             var expected = new Addr {
@@ -139,7 +139,7 @@ namespace Tests.Network
 
             var data = hex.Decode(bytes).ToArray();
             using var mem = new MemoryStream(data);
-            using var reader = new ProtocolReader(mem);
+            using var reader = new PayloadReader(mem);
             var result = reader.ReadAddr();
                 
             Assert.AreEqual(expected.Addrs.Count, result.Addrs.Count);
