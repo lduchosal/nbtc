@@ -16,7 +16,7 @@ namespace Nbtc.Client
         private readonly MessageProvider _message;
         private readonly NodeWalkerStateMachine _nodewalker;
         public event  EventHandler<Message> MessageReceived = delegate {  };
-        public event  EventHandler<List<Message>> MessagesSent = delegate {  };
+        public event  EventHandler<IEnumerable<Message>> MessagesSent = delegate {  };
         public event  EventHandler<string> EventHappened = delegate {  };
         public event  EventHandler<Addr> AddrReceived = delegate {  };
         public event  EventHandler<Exception> ErrorHappened = delegate {  };
@@ -177,7 +177,7 @@ namespace Nbtc.Client
         {
             _nodewalker.ConnectSocket();
         }
-        private void Send(List<Message> msgs)
+        private void Send(IEnumerable<Message> msgs)
         {
             var c = _client.Send((s) =>
             {

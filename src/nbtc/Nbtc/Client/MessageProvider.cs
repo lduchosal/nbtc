@@ -9,7 +9,7 @@ namespace Nbtc.Client
     public class MessageProvider
     {
 
-        public List<Message> Version()
+        public IEnumerable<Message> Version()
         {
 
             var now = (ulong)DateTimeOffset.UtcNow.ToUnixTimeSeconds();
@@ -41,55 +41,40 @@ namespace Nbtc.Client
                 }
                 ;
 
-            return new List<Message>
+            yield return new Message
             {
-                new Message
+                Magic = NetworkId.MainNet,
+                Payload = version
+            };
+        }
+
+        public IEnumerable<Message> GetAddr()
+        {
+            yield return new Message
+            {
+                Magic = NetworkId.MainNet,
+                Payload = new GetAddr { }
+            };
+        }
+
+        public IEnumerable<Message> Ping()
+        {
+            yield return new Message 
+            {
+                Magic = NetworkId.MainNet,
+                Payload = new Ping
                 {
-                    Magic = NetworkId.MainNet,
-                    Payload = version
+                    Nonce = 1234
                 }
             };
         }
 
-        public List<Message> GetAddr()
+        public IEnumerable<Message> VerAck()
         {
-
-            return new List<Message>
+            yield return new Message
             {
-                new Message
-                {
-                    Magic = NetworkId.MainNet,
-                    Payload = new GetAddr { }
-                }
-            };
-        }
-
-        public List<Message> Ping()
-        {
-
-            return new List<Message>
-            {
-                new Message
-                {
-                    Magic = NetworkId.MainNet,
-                    Payload = new Ping
-                    {
-                        Nonce = 1234
-                    }
-                }
-            };
-        }
-
-        public List<Message> VerAck()
-        {
-
-            return new List<Message>
-            {
-                new Message
-                {
-                    Magic = NetworkId.MainNet,
-                    Payload = new VerAck { }
-                }
+                Magic = NetworkId.MainNet,
+                Payload = new VerAck { }
             };
         }
     }
