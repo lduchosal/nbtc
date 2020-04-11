@@ -1,9 +1,11 @@
 using System;
+using Nbtc.Network;
 using Stateless;
+using Version = Nbtc.Network.Version;
 
 namespace Nbtc.Client
 {
-    public class NodeWalker
+    public class NodeWalkerStateMachine
     {
         enum Trigger
         {
@@ -32,28 +34,33 @@ namespace Nbtc.Client
             GetAddr, 
             Addr
         };
-        private StateMachine<State, Trigger> _machine;
+        private readonly StateMachine<State, Trigger> _machine;
+        private readonly StateMachine<State, Trigger>.TriggerWithParameters<Addr> _addrTrigger;
+        private readonly StateMachine<State, Trigger>.TriggerWithParameters<Version> _versionTrigger;
 
         private State _state;
         public event EventHandler OnInit = delegate { };
         public event EventHandler OnConnect = delegate { };
         public event EventHandler OnVersionSent = delegate { };
-        public event EventHandler OnVersionReceived = delegate { };
+        public event EventHandler<Version> OnVersionReceived = delegate { };
         public event EventHandler OnVerackReceived = delegate { };
         public event EventHandler OnVerackSent = delegate { };
         public event EventHandler OnHandshake = delegate { };
         public event EventHandler OnGetAddr = delegate { };
-        public event EventHandler OnAddr = delegate { };
+        public event EventHandler<Addr> OnAddr = delegate { };
         public event EventHandler<string> OnUnhandledTrigger = delegate { };
         
 
-        public NodeWalker()
+        public NodeWalkerStateMachine()
         {
             _state = State.Init;
             
             var sm = new StateMachine<State, Trigger>(
                 () => _state, 
                 s => _state = s);
+            
+            var addrTrigger = sm.SetTriggerParameters<Addr>(Trigger.ReceiveAddr);
+            var versionTrigger = sm.SetTriggerParameters<Version>(Trigger.ReceiveVersion);
 
             sm.Configure(State.Init)
                 .OnEntry(() => OnInit(this, new EventArgs()))
@@ -70,7 +77,7 @@ namespace Nbtc.Client
                 ;
             
             sm.Configure(State.VersionReceived)
-                .OnEntry(() => OnVersionReceived(this, new EventArgs()))
+                .OnEntryFrom(versionTrigger, (v) => OnVersionReceived(this, v))
                 .Permit(Trigger.ReceiveVerack, State.VerackReceived)
                 .Permit(Trigger.SendVerack, State.VerackSent)
                 ;
@@ -102,12 +109,14 @@ namespace Nbtc.Client
                 ;
 
             sm.Configure(State.Addr)
-                .OnEntry(() => OnAddr(this, new EventArgs()))
+                .OnEntryFrom(addrTrigger, addr => OnAddr(this, addr) )
                 ;
 
 
             sm.OnUnhandledTrigger((s,t) => OnUnhandledTrigger(this, $"{s} -> {t}"));
             _machine = sm;
+            _addrTrigger = addrTrigger;
+            _versionTrigger = versionTrigger;
         }
 
         public void ConnectSocket()
@@ -120,9 +129,9 @@ namespace Nbtc.Client
             _machine.Fire(Trigger.SendVersion);   
         }
         
-        public void ReceiveAddr()
+        public void ReceiveAddr(Addr a)
         {
-            _machine.Fire(Trigger.ReceiveAddr);   
+            _machine.Fire<Addr>(_addrTrigger, a);   
         }
         
         public void ReceiveOther()
@@ -134,9 +143,9 @@ namespace Nbtc.Client
             _machine.Fire(Trigger.ReceiveVerack);   
         }
         
-        public void ReceiveVersion()
+        public void ReceiveVersion(Version v)
         {
-            _machine.Fire(Trigger.ReceiveVersion);   
+            _machine.Fire(_versionTrigger, v);   
         }
         public void SendVerack()
         {

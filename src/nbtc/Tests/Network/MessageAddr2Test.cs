@@ -18,9 +18,9 @@ namespace Tests.Network
             var dump = @"
 T 104.198.116.235:8333 -> 10.0.3.133:50431 [A]
 0000    f9 be b4 d9 61 64 64 72    00 00 00 00 00 00 00 00    ????addr........
-0000    33 75 00 00 49 88 45 85    fd e8 03 a4 03 85 5e 0d    3u..I.E.??.?..^.
-0000    04 00 00 00 00 00 00 00    00 00 00 00 00 00 00 00    ................
-0000    00 ff ff 2e 1c cf 8f 20    8d d2 3e 8a 5e 09 04 00    .??..?. .?>.^...
+0010    33 75 00 00 49 88 45 85    fd e8 03 a4 03 85 5e 0d    3u..I.E.??.?..^.
+0020    04 00 00 00 00 00 00 00    00 00 00 00 00 00 00 00    ................
+0030    00 ff ff 2e 1c cf 8f 20    8d d2 3e 8a 5e 09 04 00    .??..?. .?>.^...
 0000    00 00 00 00 00 00 00 00    00 00 00 00 00 00 00 ff    ...............?
 0000    ff 68 fb ff a2 20 8d fb    82 87 5e 0d 04 00 00 00    ?h??? .?..^.....
 0000    00 00 00 00 00 00 00 00    00 00 00 00 00 ff ff a7    .............???
@@ -1946,11 +1946,21 @@ T 104.198.116.235:8333 -> 10.0.3.133:50431 [AP]
            using var mem = new MemoryStream(original.ToArray());
            using var reader = new MessageReader(mem, state);
            var message = reader.ReadMessage();
-           var addr = message.Payload as Addr;
+           var addrs = message.Payload as Addr;
 
            Assert.AreEqual(Command.Addr, message.Payload.Command);
-           Assert.IsNotNull(addr);
-           Assert.AreEqual((Int32)253, addr.Addrs.Count);
+           Assert.IsNotNull(addrs);
+           Assert.AreEqual((Int32)1000, addrs.Addrs.Count);
+
+           var addr = addrs.Addrs[0];
+           Assert.AreEqual((System.UInt32)1585775524, addr.Timestamp);
+           Assert.AreEqual("::ffff:46.28.207.143", addr.NetworkAddr.Ip.ToString());
+           Assert.AreEqual(8333, addr.NetworkAddr.Port);
+           Assert.AreEqual(Service.Network 
+               | Service.Bloom
+               | Service.Witness
+               | Service.NetworkLimited, 
+               addr.NetworkAddr.Services);
            
        }
 

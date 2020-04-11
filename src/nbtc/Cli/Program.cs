@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading;
 using Nbtc.Client;
 
@@ -11,7 +13,7 @@ namespace Cli
             Console.WriteLine("nbtc cli");
             
             var message = new MessageProvider();
-            string hostname = "104.198.116.235";
+            string hostname = "127.0.0.1";
             int port = 8333;
             
             var ev = new AutoResetEvent(false);
@@ -35,21 +37,37 @@ namespace Cli
                 Console.WriteLine($"EventHappened : {e}");
             };
             
-            client.AddrReceived += (o, e) =>
+            client.AddrReceived += (o, a) =>
             {
-                Console.WriteLine($"AddrReceived : {e}");
-                Console.WriteLine($"AddrReceived : Stopping program");
+                Console.WriteLine($"AddrReceived [Addrs {a.Addrs.Count}]");
+                foreach (var addr in a.Addrs)
+                {
+                    Console.WriteLine($"AddrReceived [Addr: {addr}]");
+                }
                 ev.Set();
             };
+
+            
+            client.VersionReceived += (o, v) =>
+            {
+                Console.WriteLine($"VersionReceived [UserAgent   : {v.UserAgent}]");
+                Console.WriteLine($"VersionReceived [Timestamp   : {v.Timestamp}]");
+                Console.WriteLine($"VersionReceived [Version     : {v.Vversion}]");
+                Console.WriteLine($"VersionReceived [StartHeight : {v.StartHeight}]");
+                Console.WriteLine($"VersionReceived [Services    : {v.Services}]");
+                Console.WriteLine($"VersionReceived [Receiver    : {v.Receiver.ToString()}]");
+                Console.WriteLine($"VersionReceived [Sender      : {v.Sender.ToString()}]");
+            };
+            
             client.ErrorHappened += (o, e) =>
             {
                 Console.WriteLine($"ErrorHappened : {e.ToString()}");
-                Console.WriteLine($"ErrorHappened : Stopping program");
                 ev.Set();
             };
             
             client.Run();
             ev.WaitOne();
+            Console.WriteLine($"Stopping program");
 
 
         }

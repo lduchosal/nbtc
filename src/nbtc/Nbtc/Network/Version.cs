@@ -49,6 +49,7 @@ namespace Nbtc.Network
         public int StartHeight { get; set; }
         public bool Relay { get; set; }
         public Command Command { get { return Command.Version; }}
+        
 
     }
 }

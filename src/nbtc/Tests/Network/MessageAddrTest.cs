@@ -1957,7 +1957,7 @@ T 134.209.250.30:8333 -> 10.0.3.133:61134 [AP]
 
            Assert.AreEqual(Command.Addr, message.Payload.Command);
            Assert.IsNotNull(addr);
-           Assert.AreEqual((Int32)253, addr.Addrs.Count);
+           Assert.AreEqual((Int32)1000, addr.Addrs.Count);
            
        }
 

@@ -1,15 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq.Expressions;
-using System.Runtime.CompilerServices;
 using System.Threading;
-using System.Threading.Tasks;
 using BeetleX;
 using BeetleX.Clients;
 using Nbtc.Network;
 using Nbtc.Serialization;
-using Nbtc.Util;
+using Version = Nbtc.Network.Version;
 
 namespace Nbtc.Client
 {
@@ -18,27 +14,28 @@ namespace Nbtc.Client
         private readonly AsyncTcpClient _client;
         private readonly MessageStateMachine _state = new MessageStateMachine();
         private readonly MessageProvider _message;
-        private readonly NodeWalker _nodewalker;
+        private readonly NodeWalkerStateMachine _nodewalker;
         public event  EventHandler<Message> MessageReceived = delegate {  };
         public event  EventHandler<List<Message>> MessagesSent = delegate {  };
         public event  EventHandler<string> EventHappened = delegate {  };
-        public event  EventHandler<string> AddrReceived = delegate {  };
+        public event  EventHandler<Addr> AddrReceived = delegate {  };
         public event  EventHandler<Exception> ErrorHappened = delegate {  };
+        public event  EventHandler<Version> VersionReceived = delegate {  };
         
 
         public NbtcClient(MessageProvider message, string hostname, int port)
         {
-            var nodewalker = new NodeWalker();
-            nodewalker.OnAddr += OnAddr;
-            nodewalker.OnConnect += OnConnect;
-            nodewalker.OnHandshake += OnHandshake;
-            nodewalker.OnInit += OnInit;
-            nodewalker.OnGetAddr += OnGetAddr;
-            nodewalker.OnVerackReceived += OnVerackReceived;
-            nodewalker.OnVerackSent += OnVerackSent;
-            nodewalker.OnVersionReceived += OnVersionReceived;
-            nodewalker.OnVersionSent += OnVersionSent;
-            nodewalker.OnUnhandledTrigger += OnUnhandledTrigger;
+            var nw = new NodeWalkerStateMachine();
+            nw.OnAddr += OnAddr;
+            nw.OnConnect += OnConnect;
+            nw.OnHandshake += OnHandshake;
+            nw.OnInit += OnInit;
+            nw.OnGetAddr += OnGetAddr;
+            nw.OnVerackReceived += OnVerackReceived;
+            nw.OnVerackSent += OnVerackSent;
+            nw.OnVersionReceived += OnVersionReceived;
+            nw.OnVersionSent += OnVersionSent;
+            nw.OnUnhandledTrigger += OnUnhandledTrigger;
             
             var client = SocketFactory.CreateClient<AsyncTcpClient>(hostname, port);
             client.Connected += Connected;
@@ -48,7 +45,7 @@ namespace Nbtc.Client
             
             _client = client;
             _message = message;
-            _nodewalker = nodewalker;
+            _nodewalker = nw;
 
         }
 
@@ -67,10 +64,11 @@ namespace Nbtc.Client
             ErrorHappened(this, e.Error);
         }
 
-        private void OnAddr(object sender, EventArgs e)
+        private void OnAddr(object sender, Addr a)
         {
-            AddrReceived(this, "Addr");
+            AddrReceived(this, a);
         }
+        
         private void OnConnect(object sender, EventArgs e)
         {
             EventHappened(this, "OnConnect");
@@ -99,9 +97,9 @@ namespace Nbtc.Client
             _nodewalker.SendVerack();
             Send( _message.VerAck());
         }
-        private void OnVersionReceived(object sender, EventArgs e)
+        private void OnVersionReceived(object sender, Version v)
         {
-            EventHappened(this, "OnVersionReceived");
+            VersionReceived(this, v);
         }
         private void OnVersionSent(object sender, EventArgs e)
         {
@@ -117,17 +115,6 @@ namespace Nbtc.Client
             EventHappened(this, $"OnUnhandledTrigger : {e}");
         }
         
-
-        public bool IsConnected
-        {
-            get { return _client.IsConnected; }
-        }
-
-        public Exception LastError
-        {
-            get { return _client.LastError; }
-        }
-
         private void DataReceive(IClient c, ClientReceiveArgs e)
         {
             try
@@ -152,14 +139,15 @@ namespace Nbtc.Client
         {
             MessageReceived(this, message);
             var command = message.Payload.Command;
+            var payload = message.Payload;
             switch (command)
             {
                 case Command.Version:
-                    _nodewalker.ReceiveVersion();
+                    _nodewalker.ReceiveVersion(payload as Version);
                     break;
                 
                 case Command.Addr:
-                    _nodewalker.ReceiveAddr();
+                    _nodewalker.ReceiveAddr(payload as Addr);
                     break;
                 
                 case Command.VerAck:

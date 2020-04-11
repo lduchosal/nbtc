@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using BeetleX;
 
 namespace Nbtc.Network
 {
@@ -50,5 +51,21 @@ namespace Nbtc.Network
         public Service Services { get; set; }
         public IPAddress Ip { get; set; }
         public ushort Port { get; set; }
+
+        public override string ToString()
+        {
+            return $"{{ {Ip}:{Port} | {Services} }}";
+        }
+    }
+    
+    public class TimedNetworkAddr
+    {
+        public uint Timestamp { get; set; }
+        public NetworkAddr NetworkAddr { get; set; }
+
+        public override string ToString()
+        {
+            return $"{{ {Timestamp} | {NetworkAddr} }}";
+        }
     }
 }

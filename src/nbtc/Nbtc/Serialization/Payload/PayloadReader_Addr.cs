@@ -65,9 +65,9 @@ namespace Nbtc.Serialization
 
         public Addr ReadAddr()
         {
-            var len = ReadByte();
+            var len = ReadVarInt();
             var addrs = new List<TimedNetworkAddr>();
-            for (int i = 0; i < len; i++)
+            for (ulong i = 0; i < len.Value; i++)
             {
                 var tna = ReadTimedNetworkAddr();
                 addrs.Add(tna);
@@ -79,17 +79,10 @@ namespace Nbtc.Serialization
             };
         }
         
-        public TimedNetworkAddr ReadTimedNetworkAddr()
+        public uint ReadTimestamp()
         {
-            var ts = ReadUInt32();
-            var addr = ReadNetworkAddr();
 
-            return new TimedNetworkAddr
-            {
-                Timestamp = ts,
-                NetworkAddr = addr
-            };
-
+            return ReadUInt32();
         }
 
 

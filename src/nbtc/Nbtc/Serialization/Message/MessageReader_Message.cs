@@ -44,10 +44,8 @@ namespace Nbtc.Serialization
             while (this.BaseStream.Length > 0)
             {
                 long length = this.BaseStream.Length;
-                
-                Console.WriteLine($"ReadMessages [StateMachine : {_machine.State}]");
+                Console.WriteLine($"ReadMessages [length : {length}]");
                 var result = _machine.Bytes(length);
-                Console.WriteLine($"ReadMessages [StateMachine : {_machine.State}]");
                 Console.WriteLine($"ReadMessages [result : {result.Statut}]");
 
                 if (result.Statut == MessageStatut.Failed)
@@ -64,6 +62,7 @@ namespace Nbtc.Serialization
                 }
             }
         }
+        
         private void OnUnHandled(object sender, string unhandled)
         {
             Console.WriteLine($"OnUnHandled [unhandled: {unhandled}]");
@@ -83,10 +82,12 @@ namespace Nbtc.Serialization
             var length = ReadInt32();
             var checksum = ReadUInt32();
 
-            Console.WriteLine($"OnMessage [magic: {magic}]");
-            Console.WriteLine($"OnMessage [command: {command}]");
-            Console.WriteLine($"OnMessage [length: {length}]");
-            Console.WriteLine($"OnMessage [checksum: {checksum}]");
+            Console.WriteLine($"OnMessage {{");
+            Console.WriteLine($"    [magic: {magic}]");
+            Console.WriteLine($"    [command: {command}]");
+            Console.WriteLine($"    [length: {length}]");
+            Console.WriteLine($"    [checksum: {checksum}]");
+            Console.WriteLine($"}}");
 
             if (command == Command.Unknwon)
             {
@@ -111,23 +112,31 @@ namespace Nbtc.Serialization
                 mea.Result = MessageStatut.Missing;
                 return;
             }
-
+            
             var bpayload = ReadBytes(length);
             var blength = bpayload.Length;
+            
+            Console.WriteLine($"OnChecksum {{");
+            Console.WriteLine($"    [length: {length}]");
+            Console.WriteLine($"    [blength: {blength}]");
+            Console.WriteLine($"}}]");
+            
             if (blength != length)
             {
-                Console.WriteLine($"OnChecksum [length: {length}]");
-                Console.WriteLine($"OnChecksum [blength: {blength}]");
                 mea.Result = MessageStatut.Failed;
                 return;
             }
 
             var checksum = mea.Message.Checksum;
             var checksum2 = Checksum(bpayload);
+            
+            Console.WriteLine($"OnChecksum {{");
+            Console.WriteLine($"    [checksum: {checksum}]");
+            Console.WriteLine($"    [checksum2: {checksum2}]");
+            Console.WriteLine($"}}]");
+            
             if (checksum != checksum2)
             {
-                Console.WriteLine($"OnChecksum [checksum: {checksum}]");
-                Console.WriteLine($"OnChecksum [checksum2: {checksum2}]");
 
                 mea.Result = MessageStatut.Failed;
                 return;

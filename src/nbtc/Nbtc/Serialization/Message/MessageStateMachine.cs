@@ -18,8 +18,7 @@ namespace Nbtc.Serialization
             get { return _state; }
             private set
             {
-                Console.WriteLine($"MessageStateMachine State [before : {_state}]");
-                Console.WriteLine($"MessageStateMachine State [value : {value}]");
+                Console.WriteLine($"MessageStateMachine State [{_state} -> {value}]");
                 _state = value;
             }
         }
@@ -101,20 +100,15 @@ namespace Nbtc.Serialization
                 return MessageResult.Missing();
             }
 
-            
-            var beforestate = _machine.State;
             _machine.Fire(_bytesTrigger, length);
-            var afterstate = _machine.State;
+            var state = _machine.State;
             
-            Console.WriteLine($"Bytes : [beforestate: {beforestate}]");
-            Console.WriteLine($"Bytes : [afterstate: {afterstate}]");
-            
-            if (afterstate == StateEnum.Message
-                || afterstate == StateEnum.Checksum)
+            if (state == StateEnum.Message
+                || state == StateEnum.Checksum)
             {
                 return MessageResult.Missing();
             }
-            else if ( afterstate == StateEnum.Succeed) 
+            else if ( state == StateEnum.Succeed) 
             {
                 return MessageResult.Succeed(_message);
             }

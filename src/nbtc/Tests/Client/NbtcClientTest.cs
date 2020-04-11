@@ -10,12 +10,11 @@ namespace Tests.Client
     {
         
         [TestMethod]
-        [Ignore]
         public void When_Encode_Ping_Then_nothing_To_Encode() {
 
             
             var message = new MessageProvider();
-            string hostname = "104.198.116.235";
+            string hostname = "127.0.0.1";
             int port = 8333;
             
             var ev = new AutoResetEvent(false);
@@ -39,10 +38,13 @@ namespace Tests.Client
             client.AddrReceived += (o, e) =>
             {
                 Console.WriteLine($"AddrReceived : {e}");
+                ev.Set();
             };
 
             client.Run();
             ev.WaitOne();
+            
+            Thread.Sleep(1000);
 
 
         }
