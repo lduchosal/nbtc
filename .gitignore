@@ -3,11 +3,13 @@
 ################################################################################
 
 /.vs
-/src/nbtc/Cli/bin/Debug/netcoreapp3.1
+/src/nbtc/Cli/bin
 /src/nbtc/Cli/obj
-/src/nbtc/Nbtc/bin/Debug/netstandard2.0
+/src/nbtc/Nbtc/bin
 /src/nbtc/Nbtc/obj
+/src/nbtc/NodeWalker/bin
 /src/nbtc/NodeWalker/obj
-/src/nbtc/Tests/bin/Debug/netcoreapp3.1
+/src/nbtc/Tests/bin
 /src/nbtc/Tests/obj
-/src/nbtc/.vs/nbtc
+/src/nbtc/.vs
+/src/nbtc/.idea
