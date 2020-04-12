@@ -1,13 +1,13 @@
+using System;
 using Nbtc.Network;
-using Nbtc.Network.Payload;
-using Nbtc.Serialization;
 using Nbtc.Serialization.Message;
 using Serilog;
 using Serilog.Events;
+using Version = Nbtc.Network.Payload.Version;
 
 namespace Nbtc.Util
 {
-    public interface ILogger
+    public interface ILogger : IDisposable
     {
         ILogger For<T>();
         void Debug(string template, params object[] values);
@@ -15,7 +15,7 @@ namespace Nbtc.Util
         void Fatal(string template, params object[] values);
     }
 
-    public class Logger : ILogger
+    public class Logger : ILogger, IDisposable
     {
         public Logger()
         {
@@ -82,6 +82,10 @@ namespace Nbtc.Util
             {
                 _inner.Fatal(template, values);
             }
+        }
+        public void Dispose()
+        {
+            Log.CloseAndFlush();
         }
     }
 }

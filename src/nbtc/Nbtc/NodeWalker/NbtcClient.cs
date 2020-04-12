@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using BeetleX;
 using BeetleX.Clients;
+using Nbtc.Client;
 using Nbtc.Network;
 using Nbtc.Network.Payload;
 using Nbtc.Serialization;
@@ -9,9 +10,9 @@ using Nbtc.Serialization.Message;
 using Nbtc.Util;
 using Version = Nbtc.Network.Payload.Version;
 
-namespace Nbtc.Client
+namespace Nbtc.NodeWalker
 {
-    public class NbtcClient
+    public class NbtcClient : IDisposable
     {
         private readonly AsyncTcpClient _client;
         private readonly MessageStateMachine _state = new MessageStateMachine();
@@ -183,6 +184,11 @@ namespace Nbtc.Client
                 }
             });
             Sent(this, msgs);
+        }
+
+        public void Dispose()
+        {
+            _client.Dispose();
         }
     }
 }

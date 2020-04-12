@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Nbtc.Client;
+using Nbtc.NodeWalker;
 using Nbtc.Util;
 
 namespace Tests.Client
@@ -11,45 +12,15 @@ namespace Tests.Client
     {
         
         [TestMethod]
-        public void When_Encode_Ping_Then_nothing_To_Encode() {
+        public void When_Run_Localhost_Returns_AddrList() {
 
-            
-            var message = new MessageProvider();
             string hostname = "127.0.0.1";
             int port = 8333;
-            
-            var ev = new AutoResetEvent(false);
-            var logger = new Logger();
-            var client = new NbtcClient(logger, message, hostname, port);
 
-            client.Received += (o, e) =>
-            {
-                var command = e.Payload.Command;
-                Console.WriteLine($"NetworkId : {e.Magic}");
-                Console.WriteLine($"Command: {command}");
-            };
-            client.Received += (o, e) =>
-            {
-                var command = e.Payload.Command;
-                Console.WriteLine($"NetworkId : {e.Magic}");
-                Console.WriteLine($"Command: {command}");
-            };
-            client.Event += (o, e) =>
-            {
-                Console.WriteLine($"EventHappened : {e}");
-            };
-            client.Addr += (o, e) =>
-            {
-                Console.WriteLine($"AddrReceived : {e}");
-                ev.Set();
-            };
-
-            client.Run();
-            ev.WaitOne();
+            var nw = new NodeWalker(hostname, port);
+            nw.Run();
             
             Thread.Sleep(1000);
-
-
         }
 
     }
