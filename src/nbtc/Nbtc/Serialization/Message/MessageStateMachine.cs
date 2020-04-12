@@ -11,17 +11,8 @@ namespace Nbtc.Serialization
 
         private readonly StateMachine<StateEnum, Trigger> _machine;
         private Message _message;
-        private StateEnum _state;
 
-        public StateEnum State
-        {
-            get { return _state; }
-            private set
-            {
-                Console.WriteLine($"MessageStateMachine State [{_state} -> {value}]");
-                _state = value;
-            }
-        }
+        public StateEnum State { get; private set; }
 
         private Trigger? _error;
 

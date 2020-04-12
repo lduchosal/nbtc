@@ -3,6 +3,7 @@ using System.Net;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Nbtc.Network;
 using Nbtc.Serialization;
+using Nbtc.Util;
 
 namespace Tests.Network
 {
@@ -27,9 +28,10 @@ namespace Tests.Network
             }
             var state = new MessageStateMachine();
             
+            var logger = new Logger();
             using var mem2 = new MemoryStream(mem.ToArray());
-            using var reader = new MessageReader(mem2, state);
-            var result = reader.ReadMessage();
+            using var reader = new MessageReader(logger, mem2, state);
+var result = reader.ReadMessage();
             var mpayload = message.Payload as Ping;
             var rpayload = result.Payload as Ping;
 
@@ -54,9 +56,10 @@ namespace Tests.Network
             }
             var state = new MessageStateMachine();
 
+            var logger = new Logger();
             using var mem2 = new MemoryStream(mem.ToArray());
-            using var reader = new MessageReader(mem2, state);
-            var result = reader.ReadMessage();
+            using var reader = new MessageReader(logger, mem2, state);
+var result = reader.ReadMessage();
             var mpayload = message.Payload as Pong;
             var rpayload = result.Payload as Pong;
 
@@ -82,8 +85,9 @@ namespace Tests.Network
             }
 
             var state = new MessageStateMachine();
+            var logger = new Logger();
             using var mem2 = new MemoryStream(mem.ToArray());
-            using var reader = new MessageReader(mem2, state);
+            using var reader = new MessageReader(logger, mem2, state);
             var result = reader.ReadMessage();
 
             var mpayload = message.Payload as Alert;
@@ -127,9 +131,10 @@ namespace Tests.Network
             }
 
             var state = new MessageStateMachine();
+            var logger = new Logger();
             using var mem2 = new MemoryStream(mem.ToArray());
-            using var reader = new MessageReader(mem2, state);
-            var result = reader.ReadMessage();
+            using var reader = new MessageReader(logger, mem2, state);
+var result = reader.ReadMessage();
             
             var mpayload = message.Payload as Version;
             var rpayload = result.Payload as Version;

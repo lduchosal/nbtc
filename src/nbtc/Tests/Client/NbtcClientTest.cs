@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Nbtc.Client;
+using Nbtc.Util;
 
 namespace Tests.Client
 {
@@ -18,7 +19,9 @@ namespace Tests.Client
             int port = 8333;
             
             var ev = new AutoResetEvent(false);
-            var client = new NbtcClient(message, hostname, port);
+            var logger = new Logger();
+            var client = new NbtcClient(logger, message, hostname, port);
+
             client.MessageReceived += (o, e) =>
             {
                 var command = e.Payload.Command;

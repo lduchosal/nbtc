@@ -76,12 +76,12 @@ namespace Tests.Network
     ";
             var hex = new HexDump();
             var original = hex.Decode(dump);
-
+            var logger = new Logger();
 
             using (var read = new MemoryStream(original.ToArray()))
             using (var write = new MemoryStream())
             {
-                using (var reader = new PayloadReader(read))
+                using (var reader = new PayloadReader(logger, read))
                 using (var writer = new ProtocolWriter(write))
                 {
                     var version = reader.ReadVersion();

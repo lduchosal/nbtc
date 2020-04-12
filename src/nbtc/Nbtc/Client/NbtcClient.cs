@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Threading;
 using BeetleX;
 using BeetleX.Clients;
 using Nbtc.Network;
 using Nbtc.Serialization;
+using Nbtc.Util;
 using Version = Nbtc.Network.Version;
 
 namespace Nbtc.Client
@@ -15,6 +15,7 @@ namespace Nbtc.Client
         private readonly MessageStateMachine _state = new MessageStateMachine();
         private readonly MessageProvider _message;
         private readonly NodeWalkerStateMachine _nodewalker;
+        private readonly ILogger _logger;
         public event  EventHandler<Message> MessageReceived = delegate {  };
         public event  EventHandler<IEnumerable<Message>> MessagesSent = delegate {  };
         public event  EventHandler<string> EventHappened = delegate {  };
@@ -23,8 +24,10 @@ namespace Nbtc.Client
         public event  EventHandler<Version> VersionReceived = delegate {  };
         
 
-        public NbtcClient(MessageProvider message, string hostname, int port)
+        public NbtcClient(ILogger logger, MessageProvider message, string hostname, int port)
         {
+            _logger = logger.For<NbtcClient>();
+
             var nw = new NodeWalkerStateMachine();
             nw.OnAddr += OnAddr;
             nw.OnConnect += OnConnect;
@@ -119,9 +122,8 @@ namespace Nbtc.Client
         {
             try
             {
-                Console.WriteLine($"[{Thread.CurrentThread.ManagedThreadId}] NbtcClient DataReceive");
-                Console.WriteLine($"[{Thread.CurrentThread.ManagedThreadId}] NbtcClient DataReceive [len: {e.Stream.Length}]");
-                using (var reader = new MessageReader(e.Stream, _state, true))
+                _logger.Debug("DataReceive [len: {0}]", e.Stream.Length);
+                using (var reader = new MessageReader(_logger, e.Stream, _state, true))
                 {
                     foreach (var message in reader.ReadMessages())
                     {
@@ -183,12 +185,10 @@ namespace Nbtc.Client
             {
                 using (var writer = new ProtocolWriter(s, true))
                 {
-                    
                     foreach (var message in msgs)
                     {
                         writer.Write(message);
                         s.Flush();
-
                     }
                 }
             });

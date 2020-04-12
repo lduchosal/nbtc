@@ -1943,8 +1943,10 @@ T 104.198.116.235:8333 -> 10.0.3.133:50431 [AP]
            var original = hex.Decode(dump);
            var state = new MessageStateMachine();
             
+            var logger = new Logger();
            using var mem = new MemoryStream(original.ToArray());
-           using var reader = new MessageReader(mem, state);
+           using var reader = new MessageReader(logger, mem, state);
+
            var message = reader.ReadMessage();
            var addrs = message.Payload as Addr;
 

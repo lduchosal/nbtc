@@ -3,15 +3,18 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using Nbtc.Network;
+using Nbtc.Util;
 
 namespace Nbtc.Serialization
 {
     public  sealed partial class MessageReader : BinaryReader
     {
+        private readonly ILogger _logger;
 
-        public MessageReader(Stream output, MessageStateMachine machine, bool leaveOpen = false)
+        public MessageReader(ILogger logger, Stream output, MessageStateMachine machine, bool leaveOpen = false)
             : base(output, EncodingCache.UTF8NoBOM, leaveOpen)
         {
+            _logger = logger.For<MessageReader>();
             _machine = machine;
             _machine.OnMessage += OnMessage;
             _machine.OnChecksum += OnChecksum;
@@ -35,8 +38,8 @@ namespace Nbtc.Serialization
             if (!parsed)
             {
                 command = Command.Unknwon;
-                Console.WriteLine($"ReadCommand [scommand: {scommand}]");
-                Console.WriteLine($"ReadCommand [Command: {command}]");
+                _logger.Debug("ReadCommand [scommand: {0}]", scommand);
+                _logger.Debug("ReadCommand [Command: {0}]", command);
                 return command;
             }
             return command;

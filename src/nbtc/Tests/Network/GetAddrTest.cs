@@ -5,6 +5,7 @@ using Microsoft.VisualStudio.TestPlatform.Common.Utilities;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Nbtc.Network;
 using Nbtc.Serialization;
+using Nbtc.Util;
 
 namespace Tests.Network
 {
@@ -23,9 +24,13 @@ namespace Tests.Network
                 writer.Write(message);
             }
 
+            var logger = new Logger();
             using var mem2 = new MemoryStream(mem.ToArray());
-            using var reader = new PayloadReader(mem2);
-            var getaddr = reader.ReadGetAddr();
+            using var reader = new PayloadReader(logger, mem2);
+
+
+
+var getaddr = reader.ReadGetAddr();
             Assert.IsNotNull(getaddr);
             Assert.AreEqual(Command.GetAddr, getaddr.Command);
         }
@@ -41,9 +46,13 @@ namespace Tests.Network
                 writer.Write(message);
             }
 
+            var logger = new Logger();
             using var mem2 = new MemoryStream(mem.ToArray());
-            using var reader = new PayloadReader(mem2);
-            var getaddr = reader.ReadGetAddr();
+            using var reader = new PayloadReader(logger, mem2);
+
+
+
+var getaddr = reader.ReadGetAddr();
             Assert.IsNotNull(getaddr);
             Assert.AreEqual(Command.GetAddr, getaddr.Command);
         }

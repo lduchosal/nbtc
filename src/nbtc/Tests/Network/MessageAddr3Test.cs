@@ -25,8 +25,10 @@ namespace Tests.Network
            var original = hex.Decode(dump);
            var state = new MessageStateMachine();
             
-           using var mem = new MemoryStream(original.ToArray());
-           using var reader = new MessageReader(mem, state);
+            var logger = new Logger();
+            using var mem = new MemoryStream(original.ToArray());
+            using var reader = new MessageReader(logger, mem, state);
+
            var message = reader.ReadMessage();
            var addrs = message.Payload as Addr;
 

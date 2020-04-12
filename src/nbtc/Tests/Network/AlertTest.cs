@@ -212,19 +212,19 @@ namespace Tests.Network
         {
 
             var data = new byte[] {0};
-            using (var mem = new MemoryStream(data))
-            using (var reader = new PayloadReader(mem))
-            {
-                var result = reader.ReadAlert();
-                var alerts = new byte [0];
-                var expected = new Alert {
-                        Data  = alerts
-                    }
-                    ;
+            var logger = new Logger();
+            using var mem = new MemoryStream(data);
+            using var reader = new PayloadReader(logger, mem);
 
-                Assert.AreEqual(expected.Data.Length, result.Data.Length);
+            var result = reader.ReadAlert();
+            var alerts = new byte [0];
+            
+            var expected = new Alert {
+                    Data  = alerts
+                }
+                ;
 
-            }
+            Assert.AreEqual(expected.Data.Length, result.Data.Length);
         }
     }
 }

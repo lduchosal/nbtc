@@ -20,8 +20,11 @@ namespace Tests.Network
             var original = hex.Decode(dump);
             var state = new MessageStateMachine();
             
+            var logger = new Logger();
             using var mem = new MemoryStream(original.ToArray());
-            using var reader = new MessageReader(mem, state);
+            using var reader = new MessageReader(logger, mem, state);
+
+
             var result = reader.ReadCommand();
             Assert.AreEqual(Command.GetAddr, result);
         }
@@ -37,8 +40,11 @@ namespace Tests.Network
             var original = hex.Decode(dump);
             var state = new MessageStateMachine();
 
+            var logger = new Logger();
             using var mem = new MemoryStream(original.ToArray());
-            using var reader = new MessageReader(mem, state);
+            using var reader = new MessageReader(logger, mem, state);
+
+
             var command = reader.ReadCommand();
             var expected = Command.Version;
 

@@ -90,8 +90,10 @@ namespace Tests.Network
            var original = hex.Decode(dump);
            var state = new MessageStateMachine();
             
+            var logger = new Logger();
            using var mem = new MemoryStream(original.ToArray());
-           using var reader = new MessageReader(mem, state);
+           using var reader = new MessageReader(logger, mem, state);
+
            var message = reader.ReadMessage();
            var getheaders = message.Payload as GetHeaders;
 

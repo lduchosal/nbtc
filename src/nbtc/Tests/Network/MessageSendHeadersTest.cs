@@ -21,9 +21,12 @@ namespace Tests.Network
             var original = hex.Decode(dump);
             var state = new MessageStateMachine();
             
+            var logger = new Logger();
             using var mem = new MemoryStream(original.ToArray());
-            using var reader = new MessageReader(mem, state);
-            var message = reader.ReadMessage();
+            using var reader = new MessageReader(logger, mem, state);
+
+
+var message = reader.ReadMessage();
             var sendheaders = message.Payload as SendHeaders;
 
             Assert.AreEqual(Command.SendHeaders, message.Payload.Command);

@@ -31,9 +31,10 @@ namespace Tests.Network
             var original = hex.Decode(dump);
 
             var state = new MessageStateMachine();
+            var logger = new Logger();
             using var read = new MemoryStream(original.ToArray());
-            using var reader = new MessageReader(read, state);
-            var message = reader.ReadMessage();
+            using var reader = new MessageReader(logger, read, state);
+var message = reader.ReadMessage();
             var version = message.Payload as Version;
 
             Assert.AreEqual(Command.Version, message.Payload.Command);

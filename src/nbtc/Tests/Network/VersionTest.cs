@@ -28,9 +28,10 @@ namespace Tests.Network
             var hex = new HexDump();
             var original = hex.Decode(dump);
 
+            var logger = new Logger();
             using var read = new MemoryStream(original.ToArray());
-            using var reader = new PayloadReader(read);
-            var version = reader.ReadVersion();
+            using var reader = new PayloadReader(logger, read);
+var version = reader.ReadVersion();
 
             Assert.AreEqual(70002, version.Vversion);
             Assert.AreEqual(Service.Network, version.Services);

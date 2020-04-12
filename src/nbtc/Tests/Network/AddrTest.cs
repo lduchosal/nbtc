@@ -82,9 +82,11 @@ namespace Tests.Network
         {
 
             var data = new byte[] {0};
+            var logger = new Logger();
             using var mem = new MemoryStream(data);
-            using var reader = new PayloadReader(mem);
-            var result = reader.ReadAddr();
+            using var reader = new PayloadReader(logger, mem);
+
+var result = reader.ReadAddr();
             var addrs = new List<TimedNetworkAddr>();
             var expected = new Addr {
                     Addrs = addrs
@@ -138,9 +140,11 @@ namespace Tests.Network
 ";
 
             var data = hex.Decode(bytes).ToArray();
+            var logger = new Logger();
             using var mem = new MemoryStream(data);
-            using var reader = new PayloadReader(mem);
-            var result = reader.ReadAddr();
+            using var reader = new PayloadReader(logger, mem);
+
+var result = reader.ReadAddr();
                 
             Assert.AreEqual(expected.Addrs.Count, result.Addrs.Count);
                 

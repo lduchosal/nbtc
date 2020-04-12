@@ -9,8 +9,4 @@
     <ProjectReference Include="..\Nbtc\Nbtc.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Serilog" Version="2.9.0" />
-  </ItemGroup>
-
 </Project>

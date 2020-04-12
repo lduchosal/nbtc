@@ -44,9 +44,10 @@ namespace Nbtc.Serialization
             while (this.BaseStream.Length > 0)
             {
                 long length = this.BaseStream.Length;
-                Console.WriteLine($"ReadMessages [length : {length}]");
+
+                _logger.Debug("ReadMessages {@len}", length);
                 var result = _machine.Bytes(length);
-                Console.WriteLine($"ReadMessages [result : {result.Statut}]");
+                _logger.Debug("ReadMessages {@result}", result);
 
                 if (result.Statut == MessageStatut.Failed)
                 {
@@ -65,7 +66,7 @@ namespace Nbtc.Serialization
         
         private void OnUnHandled(object sender, string unhandled)
         {
-            Console.WriteLine($"OnUnHandled [unhandled: {unhandled}]");
+            _logger.Fatal("OnUnHandled [unhandled: {0}]", unhandled);
             throw new InvalidProgramException(unhandled);
         }
         
@@ -82,12 +83,7 @@ namespace Nbtc.Serialization
             var length = ReadInt32();
             var checksum = ReadUInt32();
 
-            Console.WriteLine($"OnMessage {{");
-            Console.WriteLine($"    [magic: {magic}]");
-            Console.WriteLine($"    [command: {command}]");
-            Console.WriteLine($"    [length: {length}]");
-            Console.WriteLine($"    [checksum: {checksum}]");
-            Console.WriteLine($"}}");
+            _logger.Debug("OnMessage : {@Message}", new { Magic = magic, Command = command, Length = length, Checksum = checksum});
 
             if (command == Command.Unknwon)
             {
@@ -116,11 +112,12 @@ namespace Nbtc.Serialization
             var bpayload = ReadBytes(length);
             var blength = bpayload.Length;
             
-            Console.WriteLine($"OnChecksum {{");
-            Console.WriteLine($"    [length: {length}]");
-            Console.WriteLine($"    [blength: {blength}]");
-            Console.WriteLine($"}}]");
-            
+            _logger.Debug("OnChecksum : Len {@Len}", new
+            {
+                Message = length, 
+                Payload = blength
+            });
+
             if (blength != length)
             {
                 mea.Result = MessageStatut.Failed;
@@ -130,10 +127,12 @@ namespace Nbtc.Serialization
             var checksum = mea.Message.Checksum;
             var checksum2 = Checksum(bpayload);
             
-            Console.WriteLine($"OnChecksum {{");
-            Console.WriteLine($"    [checksum: {checksum}]");
-            Console.WriteLine($"    [checksum2: {checksum2}]");
-            Console.WriteLine($"}}]");
+            
+            _logger.Debug("OnChecksum : Checksum {@Checksum}", new
+            {
+                Message = checksum, 
+                Payload = checksum2
+            });
             
             if (checksum != checksum2)
             {
@@ -151,7 +150,7 @@ namespace Nbtc.Serialization
         {
             var command = mea.Message.Command;
             using var mem = new MemoryStream(mea.Message.BPayload);
-            using var reader = new PayloadReader(mem);
+            using var reader = new PayloadReader(_logger, mem);
             var payload = reader.ReadPayload(command);
 
             if (payload is NotImplementedCommand)

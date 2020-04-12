@@ -3,14 +3,18 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using Nbtc.Network;
+using Nbtc.Util;
 
 namespace Nbtc.Serialization
 {
     public partial class PayloadReader : BinaryReader
     {
-        public PayloadReader(Stream output, bool leaveOpen = false)
+        private readonly ILogger _logger;
+
+        public PayloadReader(ILogger logger, Stream output, bool leaveOpen = false)
             : base(output, EncodingCache.UTF8NoBOM, leaveOpen)
         {
+            _logger = logger.For<PayloadReader>();
         }
 
         public IPayload ReadPayload(Command command)

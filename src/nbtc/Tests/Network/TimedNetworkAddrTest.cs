@@ -89,9 +89,10 @@ namespace Tests.Network
 ";
             var hex = new HexDump();
             var data = hex.Decode(bytes).ToArray();
+            var logger = new Logger();
 
             using (var mem = new MemoryStream(data))
-            using (var reader = new PayloadReader(mem))
+            using (var reader = new PayloadReader(logger, mem))
             {
                 var result = reader.ReadTimedNetworkAddr();
                 var expected = new TimedNetworkAddr

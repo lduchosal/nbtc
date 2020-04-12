@@ -18,9 +18,10 @@ namespace Tests.Network
         {
 
             var data = new byte[] {0x00, 0x00, 0x00, 0x00};
+            var logger = new Logger();
 
             using var mem = new MemoryStream(data);
-            using (var reader = new PayloadReader(mem)) {
+            using (var reader = new PayloadReader(logger, mem)) {
                 var varint = reader.ReadVarInt();
                 var result = varint.Value;
                 Assert.AreEqual(result,(UInt64)0x00);
@@ -33,9 +34,10 @@ namespace Tests.Network
         {
 
             var data = new byte[] {0xfc, 0x00, 0x00, 0x00 };
+            var logger = new Logger();
             using var mem = new MemoryStream(data);
-            using (var reader = new PayloadReader(mem))
-            {
+            using (var reader = new PayloadReader(logger, mem))
+{
                 var varint = reader.ReadVarInt();
                 var result = varint.Value;
 
@@ -48,9 +50,10 @@ namespace Tests.Network
         {
 
             var data = new byte[] {0xfd, 0xfe, 0x00, 0x00};
+            var logger = new Logger();
             using var mem = new MemoryStream(data);
-            using (var reader = new PayloadReader(mem))
-            {
+            using (var reader = new PayloadReader(logger, mem))
+{
                 var varint = reader.ReadVarInt();
                 var result = varint.Value;
 
@@ -63,9 +66,10 @@ namespace Tests.Network
         {
 
             var data = new byte[] {0xfd, 0xfe, 0x01, 0x00};
+            var logger = new Logger();
             using var mem = new MemoryStream(data);
-            using (var reader = new PayloadReader(mem))
-            {
+            using (var reader = new PayloadReader(logger, mem))
+{
                 var varint = reader.ReadVarInt();
                 var result = varint.Value;
 
@@ -79,9 +83,10 @@ namespace Tests.Network
         {
 
             var data = new byte[] {0xfe, 0x03, 0x02, 0x01, 0x00};
+            var logger = new Logger();
             using var mem = new MemoryStream(data);
-            using (var reader = new PayloadReader(mem))
-            {
+            using (var reader = new PayloadReader(logger, mem))
+{
                 var varint = reader.ReadVarInt();
                 var result = varint.Value;
 
@@ -94,9 +99,10 @@ namespace Tests.Network
         {
 
             var data = new byte[] {0xff, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x01, 0x00};
+            var logger = new Logger();
             using var mem = new MemoryStream(data);
-            using (var reader = new PayloadReader(mem))
-            {
+            using (var reader = new PayloadReader(logger, mem))
+{
                 var varint = reader.ReadVarInt();
                 var result = varint.Value;
 
@@ -110,10 +116,11 @@ namespace Tests.Network
         {
 
             var data = new byte[] {0xff, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02};
+            var logger = new Logger();
             using var mem = new MemoryStream(data);
-            using var reader = new PayloadReader(mem);
+            using var reader = new PayloadReader(logger, mem);
 
-            Assert.ThrowsException<EndOfStreamException>(reader.ReadVarInt);
+Assert.ThrowsException<EndOfStreamException>(reader.ReadVarInt);
 
         }
 
@@ -122,9 +129,11 @@ namespace Tests.Network
         public void When_Decode_VarInt_0xfe_Too_Small_Then_Fail_ParseError_VarInt_fe()
         {
             var data = new byte[] {0xfe, 0x07, 0x06, 0x05};
+            var logger = new Logger();
             using var mem = new MemoryStream(data);
-            using var reader = new PayloadReader(mem);
-            Assert.ThrowsException<EndOfStreamException>(reader.ReadVarInt);
+            using var reader = new PayloadReader(logger, mem);
+
+Assert.ThrowsException<EndOfStreamException>(reader.ReadVarInt);
 
         }
 
@@ -132,9 +141,11 @@ namespace Tests.Network
         public void When_Decode_VarInt_0xfd_Too_Small_Then_Fail_ParseError_VarInt_fd()
         {
             var data = new byte[] {0xfd, 0x07};
+            var logger = new Logger();
             using var mem = new MemoryStream(data);
-            using var reader = new PayloadReader(mem);
-            Assert.ThrowsException<EndOfStreamException>(reader.ReadVarInt);
+            using var reader = new PayloadReader(logger, mem);
+
+Assert.ThrowsException<EndOfStreamException>(reader.ReadVarInt);
         }
 
         [TestMethod]
