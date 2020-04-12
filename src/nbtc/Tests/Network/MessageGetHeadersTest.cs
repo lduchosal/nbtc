@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Nbtc.Network;
 using Nbtc.Network.Payload;
 using Nbtc.Serialization;
 using Nbtc.Serialization.Message;
+using Nbtc.Serialization.Payload;
 using Nbtc.Util;
 
 namespace Tests.Network
@@ -15,8 +17,9 @@ namespace Tests.Network
         [TestMethod]
         public void When_Encode_Decode_Version_Message_Then_Message_Equal()
         {
-            
+
             #region Addr data
+
             var dump = @"
 0000    f9 be b4 d9 67 65 74 68    65 61 64 65 72 73 00 00    ????getheaders..
 0000    05 04 00 00 50 84 4e 45                               ....P.NE        
@@ -86,24 +89,197 @@ namespace Tests.Network
 0000    00 00 00 00 00 00 00 00    00 00 00 00 00 00 00 00    ................
 0000    00 00 00 00 00                                        .....           
 ";
-           #endregion
-           
-           var hex = new HexDump();
-           var original = hex.Decode(dump);
-           var state = new MessageStateMachine();
-            
+
+            #endregion
+
+            var hex = new HexDump();
+            var original = hex.Decode(dump);
+            var state = new MessageStateMachine();
+
             var logger = new Logger();
-           using var mem = new MemoryStream(original.ToArray());
-           using var reader = new MessageReader(logger, mem, state);
+            using var mem = new MemoryStream(original.ToArray());
+            using var reader = new MessageReader(logger, mem, state);
 
-           var message = reader.ReadMessage();
-           var getheaders = message.Payload as GetHeaders;
+            var message = reader.ReadMessage();
+            var getheaders = message.Payload as GetHeaders;
 
-           Assert.AreEqual(Command.GetHeaders, message.Payload.Command);
-           Assert.IsNotNull(getheaders);
-           Assert.AreEqual((UInt32)4479, getheaders.version);
-           
-       }
+            Assert.AreEqual(Command.GetHeaders, message.Payload.Command);
+            Assert.IsNotNull(getheaders);
+            Assert.AreEqual((UInt32) 70015, getheaders.version);
 
-   }
+        }
+
+        [TestMethod]
+        public void When_Decode_getheaders_valid_dump_Then_Decode_ok()
+        {
+
+            var dump = @"
+00000000   f9 be b4 d9 67 65 74 68  65 61 64 65 72 73 00 00   main.getheaders.
+00000010   65 00 00 00 8A 17 D6 CB  71 11 01 00 02 10 10 10   siz.has.ver.c.bl
+00000020   10 11 11 11 11 12 12 12  12 13 13 13 13 14 14 14   ock1.block1.bloc
+00000030   14 15 15 15 15 16 16 16  16 00 00 00 00 20 20 20   block1.block1..b
+00000040   20 21 21 21 21 22 22 22  22 23 23 23 23 24 24 24   lock2.block2.blo
+00000050   24 25 25 25 25 26 26 26  26 00 00 00 00 30 30 30   ck2.block2.blo.s
+00000060   30 31 31 31 31 32 32 32  32 33 33 33 33 34 34 34   top.stop.stop.st
+00000070   34 35 35 35 35 36 36 36  36 00 00 00 00            top.stop.sto
+"; //  0 x 8A 17 D6 CB   
+
+            var hex = new HexDump();
+            var original = hex.Decode(dump);
+            var state = new MessageStateMachine();
+
+            var logger = new Logger();
+            using var mem = new MemoryStream(original.ToArray());
+            using var reader = new MessageReader(logger, mem, state);
+
+            var message = reader.ReadMessage();
+            var getheaders = message.Payload as GetHeaders;
+
+            Assert.IsNotNull(getheaders);
+            Assert.AreEqual((UInt32)70001, getheaders.version);
+            Assert.AreEqual(0x02, getheaders.Locators.Count);
+
+            var locator1 = getheaders.Locators[0];
+            var hash1 = new byte[]
+            {
+                0x10, 0x10, 0x10, 0x10, 0x11, 0x11, 0x11, 0x11, 0x12, 0x12, 0x12, 0x12, 0x13, 0x13, 0x13, 0x13,
+                0x14, 0x14, 0x14, 0x14, 0x15, 0x15, 0x15, 0x15, 0x16, 0x16, 0x16, 0x16, 0x00, 0x00, 0x00, 0x00,
+            };
+            var slocator1 = hex.Encode(locator1.Hash);
+            var shahs1 = hex.Encode(hash1);
+            Assert.AreEqual(shahs1, slocator1);
+            
+
+            var locator2 = getheaders.Locators[1];
+            var hash2 = new byte[]
+            {
+                0x20, 0x20, 0x20, 0x20, 0x21, 0x21, 0x21, 0x21, 0x22, 0x22, 0x22, 0x22, 0x23, 0x23, 0x23, 0x23,
+                0x24, 0x24, 0x24, 0x24, 0x25, 0x25, 0x25, 0x25, 0x26, 0x26, 0x26, 0x26, 0x00, 0x00, 0x00, 0x00,
+            };
+            
+            var slocator2 = hex.Encode(locator1.Hash);
+            var shahs2 = hex.Encode(hash1);
+            Assert.AreEqual(shahs2, slocator2);
+
+            var stop = getheaders.Stop;
+            var hash3 = new byte[]
+            {
+                0x30, 0x30, 0x30, 0x30, 0x31, 0x31, 0x31, 0x31, 0x32, 0x32, 0x32, 0x32, 0x33, 0x33, 0x33, 0x33,
+                0x34, 0x34, 0x34, 0x34, 0x35, 0x35, 0x35, 0x35, 0x36, 0x36, 0x36, 0x36, 0x00, 0x00, 0x00, 0x00,
+            };
+            
+            var slocator3 = hex.Encode(stop.Hash);
+            var shahs3 = hex.Encode(hash3);
+            Assert.AreEqual(shahs3, slocator3);
+
+        }
+
+        [TestMethod]
+        public void When_Decode_Encode_getheaders_Then_same()
+        {
+
+            var dump = @"
+00000000                            71 11 01 00 02 10 10 10           ver.c.bl
+00000010   10 11 11 11 11 12 12 12  12 13 13 13 13 14 14 14   ock1.block1.bloc
+00000020   14 15 15 15 15 16 16 16  16 00 00 00 00 20 20 20   block1.block1..b
+00000030   20 21 21 21 21 22 22 22  22 23 23 23 23 24 24 24   lock2.block2.blo
+00000040   24 25 25 25 25 26 26 26  26 00 00 00 00 30 30 30   ck2.block2.blo.s
+00000050   30 31 31 31 31 32 32 32  32 33 33 33 33 34 34 34   top.stop.stop.st
+00000060   34 35 35 35 35 36 36 36  36 00 00 00 00            top.stop.sto
+";
+
+            var hex = new HexDump();
+            var original = hex.Decode(dump);
+            var state = new MessageStateMachine();
+
+            var logger = new Logger();
+            using var mem = new MemoryStream(original.ToArray());
+            using var reader = new PayloadReader(logger, mem, true);
+
+            var getheaders = reader.ReadGetHeaders();
+
+            Assert.IsNotNull(getheaders);
+
+
+            using (var mem2 = new MemoryStream())
+            {
+                using (var protocol = new ProtocolWriter(mem2))
+                {
+                    protocol.Write(getheaders);
+                }
+
+                var aoriginasl = hex.Encode(original.ToArray());
+                var result = hex.Encode(mem2.ToArray());
+
+                Assert.AreEqual(aoriginasl, result);
+            }
+        }
+
+        [TestMethod]
+        public void When_Encode_getheaders_Then_same()
+        {
+
+            var dump = @"
+00000000                            71 11 01 00 02 10 10 10           ver.c.bl
+00000010   10 11 11 11 11 12 12 12  12 13 13 13 13 14 14 14   ock1.block1.bloc
+00000020   14 15 15 15 15 16 16 16  16 00 00 00 00 20 20 20   block1.block1..b
+00000030   20 21 21 21 21 22 22 22  22 23 23 23 23 24 24 24   lock2.block2.blo
+00000040   24 25 25 25 25 26 26 26  26 00 00 00 00 30 30 30   ck2.block2.blo.s
+00000050   30 31 31 31 31 32 32 32  32 33 33 33 33 34 34 34   top.stop.stop.st
+00000060   34 35 35 35 35 36 36 36  36 00 00 00 00            top.stop.sto
+";
+
+            var hex = new HexDump();
+            var original = hex.Decode(dump);
+
+            var getheaders = new GetHeaders
+            {
+                version = 70001,
+                Locators = new List<Sha256>
+                {
+                    new Sha256
+                    {
+                        Hash = new byte[]
+                        {
+                            0x10, 0x10, 0x10, 0x10, 0x11, 0x11, 0x11, 0x11,
+                            0x12, 0x12, 0x12, 0x12, 0x13, 0x13, 0x13, 0x13,
+                            0x14, 0x14, 0x14, 0x14, 0x15, 0x15, 0x15, 0x15,
+                            0x16, 0x16, 0x16, 0x16, 0x00, 0x00, 0x00, 0x00
+                        }
+                    },
+                    new Sha256
+                    {
+                        Hash = new byte[]
+                        {
+                            0x20, 0x20, 0x20, 0x20, 0x21, 0x21, 0x21, 0x21,
+                            0x22, 0x22, 0x22, 0x22, 0x23, 0x23, 0x23, 0x23,
+                            0x24, 0x24, 0x24, 0x24, 0x25, 0x25, 0x25, 0x25,
+                            0x26, 0x26, 0x26, 0x26, 0x00, 0x00, 0x00, 0x00
+                        }
+                    }
+                },
+                Stop = new Sha256
+                {
+                    Hash = new byte[]
+                    {
+                        0x30, 0x30, 0x30, 0x30, 0x31, 0x31, 0x31, 0x31,
+                        0x32, 0x32, 0x32, 0x32, 0x33, 0x33, 0x33, 0x33,
+                        0x34, 0x34, 0x34, 0x34, 0x35, 0x35, 0x35, 0x35,
+                        0x36, 0x36, 0x36, 0x36, 0x00, 0x00, 0x00, 0x00
+                    }
+                }
+            };
+
+            using (var mem2 = new MemoryStream())
+            {
+                using (var protocol = new ProtocolWriter(mem2))
+                    protocol.Write(getheaders);
+
+                var aoriginasl = hex.Encode(original.ToArray());
+                var result = hex.Encode(mem2.ToArray());
+
+                Assert.AreEqual(aoriginasl, result);
+            }
+        }
+    }
 }

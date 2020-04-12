@@ -9,7 +9,7 @@
     /// Note: Support for alert messages has been removed from bitcoin core in March 2016. Read more here
     /// https://bitcoin.org/en/alert/2016-11-01-alert-retirement
     /// The network wide Alert system is being retired. No Bitcoins are at risk and this warning
-    /// may be safely ignored. Upgrade to the newest version of your wallet software to no longer 
+    /// may be safely ignored. Upgrade to the newest version of your walvar software to no longer 
     /// see the alert.
     /// 
     /// An alert is sent between nodes to send a general notification message throughout the network. 

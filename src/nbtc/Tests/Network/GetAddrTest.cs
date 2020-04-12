@@ -30,9 +30,7 @@ namespace Tests.Network
             using var mem2 = new MemoryStream(mem.ToArray());
             using var reader = new PayloadReader(logger, mem2);
 
-
-
-var getaddr = reader.ReadGetAddr();
+            var getaddr = reader.ReadGetAddr();
             Assert.IsNotNull(getaddr);
             Assert.AreEqual(Command.GetAddr, getaddr.Command);
         }
@@ -52,9 +50,7 @@ var getaddr = reader.ReadGetAddr();
             using var mem2 = new MemoryStream(mem.ToArray());
             using var reader = new PayloadReader(logger, mem2);
 
-
-
-var getaddr = reader.ReadGetAddr();
+            var getaddr = reader.ReadGetAddr();
             Assert.IsNotNull(getaddr);
             Assert.AreEqual(Command.GetAddr, getaddr.Command);
         }

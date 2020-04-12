@@ -45,7 +45,6 @@ namespace Nbtc.Serialization.Message
             return command;
         }
         
-    
         public string ReadNullTerminatedString(int len)
         {
             var bytes = ReadBytes(len);

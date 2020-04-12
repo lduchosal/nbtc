@@ -33,7 +33,7 @@ namespace Tests.Network
             var logger = new Logger();
             using var mem2 = new MemoryStream(mem.ToArray());
             using var reader = new MessageReader(logger, mem2, state);
-var result = reader.ReadMessage();
+            var result = reader.ReadMessage();
             var mpayload = message.Payload as Ping;
             var rpayload = result.Payload as Ping;
 
@@ -61,7 +61,7 @@ var result = reader.ReadMessage();
             var logger = new Logger();
             using var mem2 = new MemoryStream(mem.ToArray());
             using var reader = new MessageReader(logger, mem2, state);
-var result = reader.ReadMessage();
+            var result = reader.ReadMessage();
             var mpayload = message.Payload as Pong;
             var rpayload = result.Payload as Pong;
 
@@ -136,7 +136,7 @@ var result = reader.ReadMessage();
             var logger = new Logger();
             using var mem2 = new MemoryStream(mem.ToArray());
             using var reader = new MessageReader(logger, mem2, state);
-var result = reader.ReadMessage();
+            var result = reader.ReadMessage();
             
             var mpayload = message.Payload as Version;
             var rpayload = result.Payload as Version;

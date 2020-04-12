@@ -29,8 +29,7 @@ namespace Tests.Network
             using var mem = new MemoryStream(original.ToArray());
             using var reader = new MessageReader(logger, mem, state);
 
-
-var message = reader.ReadMessage();
+            var message = reader.ReadMessage();
             var sendcmpct = message.Payload as SendCmpct;
 
             Assert.AreEqual(Command.SendHeaders, message.Payload.Command);

@@ -70,27 +70,6 @@ namespace Nbtc.Serialization.Payload
             // No data payload
             return new GetAddr();
         }
-        public GetHeaders ReadGetHeaders()
-        {
-            var version = ReadUInt16();
-            var varint = ReadVarInt();
-            var hashes = new List<Sha256>();
-            for (ulong i = 0; i < varint.Value; i++)
-            {
-                var bytes = ReadBytes(32);
-                var sha = new Sha256();
-                hashes.Add(sha);
-            }
-            var stopbytes = ReadBytes(32);
-            var stop = new Sha256();
-
-            return new GetHeaders
-            {
-                version = version,
-                Locators = hashes,
-                Stop = stop
-            };
-        }
         public VerAck ReadVerAck()
         {
             // No data payload

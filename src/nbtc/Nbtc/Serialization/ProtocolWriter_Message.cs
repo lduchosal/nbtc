@@ -102,11 +102,6 @@ namespace Nbtc.Serialization
         }
 
 
-        public void Write(GetHeaders payload)
-        {
-            throw new NotImplementedException();
-        }
-
         /// <summary>
         /// https://en.bitcoin.it/wiki/Protocol_documentation#getaddr
         /// 
