@@ -1,6 +1,6 @@
 using System;
 
-namespace Nbtc.Network
+namespace Nbtc.Network.Payload
 {
     /// <summary>
     /// https://en.bitcoin.it/wiki/Protocol_documentation#feefilter
@@ -30,6 +30,6 @@ namespace Nbtc.Network
         /// The value represents a minimal fee and is expressed in satoshis per 1000 bytes.
         /// </summary>
         public UInt64 FeeRate { get; set; }
-        public Command Command { get { return Command.FeeFilter; }}
+        public Command Command => Command.FeeFilter;
     }
 }

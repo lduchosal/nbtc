@@ -1,5 +1,6 @@
 using System.IO;
 using Nbtc.Network;
+using Nbtc.Network.Payload;
 
 namespace Nbtc.Serialization
 {

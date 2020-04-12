@@ -5,6 +5,7 @@ using System.Reflection.Metadata;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Nbtc.Network;
 using Nbtc.Serialization;
+using Nbtc.Serialization.Payload;
 using Nbtc.Util;
 
 namespace Tests.Network

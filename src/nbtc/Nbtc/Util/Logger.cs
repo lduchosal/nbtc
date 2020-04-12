@@ -1,5 +1,7 @@
 using Nbtc.Network;
+using Nbtc.Network.Payload;
 using Nbtc.Serialization;
+using Nbtc.Serialization.Message;
 using Serilog;
 using Serilog.Events;
 

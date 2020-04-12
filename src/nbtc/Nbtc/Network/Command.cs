@@ -14,6 +14,6 @@
         Pong,
         Inv,
         FeeFilter,
-        Unknwon
+        Unknown
     }
 }

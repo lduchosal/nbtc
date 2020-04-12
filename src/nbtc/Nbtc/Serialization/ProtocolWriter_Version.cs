@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using System.Text;
 using Nbtc.Network;
-using Version = Nbtc.Network.Version;
+using Version = Nbtc.Network.Payload.Version;
 
 namespace Nbtc.Serialization
 {

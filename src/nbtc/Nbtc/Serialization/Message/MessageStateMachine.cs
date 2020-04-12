@@ -1,16 +1,14 @@
 using System;
-using Nbtc.Client;
-using Nbtc.Network;
 using Stateless;
 
-namespace Nbtc.Serialization
+namespace Nbtc.Serialization.Message
 {
     public class MessageStateMachine
     {
         private readonly StateMachine<StateEnum, Trigger>.TriggerWithParameters<long> _bytesTrigger;
 
         private readonly StateMachine<StateEnum, Trigger> _machine;
-        private Message _message;
+        private Network.Message _message;
 
         public StateEnum State { get; private set; }
 
@@ -73,7 +71,7 @@ namespace Nbtc.Serialization
                     OnUnHandled(this, $"{s} - ({t}) -> undefined"));
             
             State = StateEnum.None;
-            _message = new Message();
+            _message = new Network.Message();
             _machine = sm;
             _bytesTrigger = bytesTrigger;
         }
@@ -111,13 +109,13 @@ namespace Nbtc.Serialization
         
         private void None()
         {
-            _message = new Message();
+            _message = new Network.Message();
             _error = null;
         }
 
         private void Message()
         {
-            _message = new Message();
+            _message = new Network.Message();
             _error = null;
 
             var mea = new MessageEventArgs {

@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 
-namespace Nbtc.Network
+namespace Nbtc.Network.Payload
 {
     /// <summary>
     /// The `sendcmpct` message
@@ -44,6 +43,6 @@ namespace Nbtc.Network
     {
         public byte Compatible { get; set; }
         public UInt64 Version { get; set; }
-        public Command Command { get { return Command.SendHeaders;} }
+        public Command Command => Command.SendHeaders;
     }
 }

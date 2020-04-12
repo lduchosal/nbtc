@@ -1,12 +1,7 @@
-using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Net;
-using System.Text;
-using Nbtc.Network;
-using Version = Nbtc.Network.Version;
+using Nbtc.Network.Payload;
 
-namespace Nbtc.Serialization
+namespace Nbtc.Serialization.Payload
 {
     public  sealed partial class PayloadReader 
     {

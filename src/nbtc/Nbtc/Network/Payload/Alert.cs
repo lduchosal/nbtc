@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Nbtc.Network
+﻿namespace Nbtc.Network.Payload
 {
     /// <summary>
     /// 
@@ -128,6 +126,6 @@ namespace Nbtc.Network
     public class Alert : IPayload
     {
         public byte[] Data { get; set; }
-        public Command Command { get { return Command.Alert;} }
+        public Command Command => Command.Alert;
     }
 }

@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using BeetleX;
 using BeetleX.Clients;
 using Nbtc.Network;
+using Nbtc.Network.Payload;
 using Nbtc.Serialization;
+using Nbtc.Serialization.Message;
 using Nbtc.Util;
-using Version = Nbtc.Network.Version;
+using Version = Nbtc.Network.Payload.Version;
 
 namespace Nbtc.Client
 {
@@ -16,12 +18,12 @@ namespace Nbtc.Client
         private readonly MessageProvider _message;
         private readonly NodeWalkerStateMachine _nodewalker;
         private readonly ILogger _logger;
-        public event  EventHandler<Message> MessageReceived = delegate {  };
-        public event  EventHandler<IEnumerable<Message>> MessagesSent = delegate {  };
-        public event  EventHandler<string> EventHappened = delegate {  };
-        public event  EventHandler<Addr> AddrReceived = delegate {  };
-        public event  EventHandler<Exception> ErrorHappened = delegate {  };
-        public event  EventHandler<Version> VersionReceived = delegate {  };
+        public event  EventHandler<Message> Received = delegate {  };
+        public event  EventHandler<IEnumerable<Message>> Sent = delegate {  };
+        public event  EventHandler<string> Event = delegate {  };
+        public event  EventHandler<Addr> Addr = delegate {  };
+        public event  EventHandler<Exception> Error = delegate {  };
+        public event  EventHandler<Version> Version = delegate {  };
         
 
         public NbtcClient(ILogger logger, MessageProvider message, string hostname, int port)
@@ -54,68 +56,68 @@ namespace Nbtc.Client
 
         private void Disconnected(IClient c)
         {
-            EventHappened(this, "Disconnected");
+            Event(this, "Disconnected");
         }
 
         private void Connected(IClient c)
         {
-            EventHappened(this, "Connected");
+            Event(this, "Connected");
         }
 
         private void ClientError(IClient c, ClientErrorArgs e)
         {
-            ErrorHappened(this, e.Error);
+            Error(this, e.Error);
         }
 
         private void OnAddr(object sender, Addr a)
         {
-            AddrReceived(this, a);
+            Addr(this, a);
         }
         
         private void OnConnect(object sender, EventArgs e)
         {
-            EventHappened(this, "OnConnect");
+            Event(this, "OnConnect");
             _nodewalker.SendVersion();
             Send( _message.Version());
         }
         private void OnHandshake(object sender, EventArgs e)
         {
-            EventHappened(this, "OnHandshake");
+            Event(this, "OnHandshake");
             _nodewalker.SendGetAddr();
             Send( _message.GetAddr());
         }
         private void OnInit(object sender, EventArgs e)
         {
-            EventHappened(this, "OnInit");
+            Event(this, "OnInit");
         }
         private void OnGetAddr(object sender, EventArgs e)
         {
-            EventHappened(this, "OnGetAddr");
+            Event(this, "OnGetAddr");
             // Thread.Sleep(10000);
             // _nodewalker.Timeout();
         }
         private void OnVerackReceived(object sender, EventArgs e)
         {
-            EventHappened(this, "OnVerackReceived");
+            Event(this, "OnVerackReceived");
             _nodewalker.SendVerack();
             Send( _message.VerAck());
         }
         private void OnVersionReceived(object sender, Version v)
         {
-            VersionReceived(this, v);
+            Version(this, v);
         }
         private void OnVersionSent(object sender, EventArgs e)
         {
-            EventHappened(this, "OnVersionSent");
+            Event(this, "OnVersionSent");
         }
         private void OnVerackSent(object sender, EventArgs e)
         {
-            EventHappened(this, "OnVerackSent");
+            Event(this, "OnVerackSent");
             _nodewalker.SetVersion();
         }
         private void OnUnhandledTrigger(object sender, string e)
         {
-            EventHappened(this, $"OnUnhandledTrigger : {e}");
+            Event(this, $"OnUnhandledTrigger : {e}");
         }
         
         private void DataReceive(IClient c, ClientReceiveArgs e)
@@ -133,13 +135,13 @@ namespace Nbtc.Client
             }
             catch (Exception ex)
             {
-                ErrorHappened(this, ex);
+                Error(this, ex);
             }
         }
 
         private void MessageReceive(Message message)
         {
-            MessageReceived(this, message);
+            Received(this, message);
             var command = message.Payload.Command;
             var payload = message.Payload;
             switch (command)
@@ -156,18 +158,6 @@ namespace Nbtc.Client
                     _nodewalker.ReceiveVerack();
                     break;
                 
-                case Command.Inv:
-                    _nodewalker.ReceiveOther();
-                    break;
-                
-                case Command.Alert:
-                    _nodewalker.ReceiveOther();
-                    break;
-                
-                case Command.Ping:
-                    _nodewalker.ReceiveOther();
-                    break;
-                    
                  default:
                     _nodewalker.ReceiveOther();
                     break;
@@ -192,7 +182,7 @@ namespace Nbtc.Client
                     }
                 }
             });
-            MessagesSent(this, msgs);
+            Sent(this, msgs);
         }
     }
 }

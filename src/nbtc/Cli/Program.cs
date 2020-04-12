@@ -21,13 +21,13 @@ namespace Cli
             var ev = new AutoResetEvent(false);
             var client = new NbtcClient(logger, message, hostname, port);
             
-            client.MessageReceived += (o, e) =>
+            client.Received += (o, e) =>
             {
                 var command = e.Payload.Command;
                 me.Info("MessageReceived : {0}", command);
             };
             
-            client.MessagesSent += (o, e) =>
+            client.Sent += (o, e) =>
             {
                 foreach (var message in e)
                 {
@@ -35,12 +35,12 @@ namespace Cli
                     me.Info("MessageSent : {0}", command);
                 }
             };
-            client.EventHappened += (o, e) =>
+            client.Event += (o, e) =>
             {
                 me.Info("EventHappened : {0}", e);
             };
             
-            client.AddrReceived += (o, a) =>
+            client.Addr += (o, a) =>
             {
                 me.Info("AddrReceived : {0}", a.Addrs.Count);
                 foreach (var addr in a.Addrs)
@@ -50,12 +50,12 @@ namespace Cli
                 ev.Set();
             };
 
-            client.VersionReceived += (o, v) =>
+            client.Version += (o, v) =>
             {
                 me.Info("VersionReceived {@Version}", v);
             };
             
-            client.ErrorHappened += (o, e) =>
+            client.Error += (o, e) =>
             {
                 me.Fatal("ErrorHappened {0}", e);
                 ev.Set();

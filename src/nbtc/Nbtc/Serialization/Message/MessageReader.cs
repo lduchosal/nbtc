@@ -5,7 +5,7 @@ using System.Text;
 using Nbtc.Network;
 using Nbtc.Util;
 
-namespace Nbtc.Serialization
+namespace Nbtc.Serialization.Message
 {
     public  sealed partial class MessageReader : BinaryReader
     {
@@ -37,7 +37,7 @@ namespace Nbtc.Serialization
             var parsed = Enum.TryParse<Command>(scommand, true, out Command command);
             if (!parsed)
             {
-                command = Command.Unknwon;
+                command = Command.Unknown;
                 _logger.Debug("ReadCommand [scommand: {0}]", scommand);
                 _logger.Debug("ReadCommand [Command: {0}]", command);
                 return command;

@@ -1,4 +1,4 @@
-namespace Nbtc.Serialization
+namespace Nbtc.Serialization.Message
 {
     public enum MessageStatut
     {

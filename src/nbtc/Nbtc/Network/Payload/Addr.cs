@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
-using System.Net;
 
-namespace Nbtc.Network
+namespace Nbtc.Network.Payload
 {
     /// <summary>
     /// https://en.bitcoin.it/wiki/Protocol_documentation#addr
@@ -57,6 +56,6 @@ namespace Nbtc.Network
     public class Addr : IPayload
     {
         public List<TimedNetworkAddr> Addrs { get; set; }
-        public Command Command { get { return Command.Addr;} }
+        public Command Command => Command.Addr;
     }
 }

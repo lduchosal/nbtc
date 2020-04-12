@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Nbtc.Network
+namespace Nbtc.Network.Payload
 {
     /// <summary>
     /// https://en.bitcoin.it/wiki/Protocol_documentation#inv
@@ -25,8 +25,7 @@ namespace Nbtc.Network
     public class Inv : IPayload
     {
         public List<InventoryVector> Inventories { get; set; }
-        public Command Command { get { return Command.Inv;} }
-
+        public Command Command => Command.Inv;
     }
 
     /// <summary>

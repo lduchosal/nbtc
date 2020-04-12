@@ -4,8 +4,9 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Nbtc.Network;
 using System.Net;
 using Nbtc.Serialization;
+using Nbtc.Serialization.Message;
 using Nbtc.Util;
-using Version = Nbtc.Network.Version;
+using Version = Nbtc.Network.Payload.Version;
 
 namespace Tests.Network
 {

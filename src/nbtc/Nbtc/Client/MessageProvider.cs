@@ -2,7 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using Nbtc.Network;
-using Version = Nbtc.Network.Version;
+using Nbtc.Network.Payload;
+using Version = Nbtc.Network.Payload.Version;
 
 namespace Nbtc.Client
 {

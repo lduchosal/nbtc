@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Nbtc.Network
+namespace Nbtc.Network.Payload
 {
     /// <summary>
 /// https://github.com/rust-bitcoin/rust-bitcoin/blob/45140a3251d9eca8d17baf7a4e900a4ac5baae3b/src/network/message_blockdata.rs
@@ -44,6 +44,6 @@ namespace Nbtc.Network
         public List<Sha256> Locators { get; set; }
         /// References the header to stop at, or zero to just fetch the maximum 2000 headers
         public Sha256 Stop{ get; set; }
-        public Command Command { get { return Command.GetHeaders;} }
+        public Command Command => Command.GetHeaders;
     }
 }

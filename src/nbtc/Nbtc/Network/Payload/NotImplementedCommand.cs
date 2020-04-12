@@ -1,4 +1,4 @@
-namespace Nbtc.Network
+namespace Nbtc.Network.Payload
 {
     public class NotImplementedCommand : IPayload
     {

@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using Nbtc.Network;
+using Nbtc.Network.Payload;
 using Nbtc.Util;
 
-namespace Nbtc.Serialization
+namespace Nbtc.Serialization.Payload
 {
     public partial class PayloadReader : BinaryReader
     {

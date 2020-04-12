@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Nbtc.Network
+﻿namespace Nbtc.Network.Payload
 {
     /// <summary>
     /// The `version` message
@@ -48,8 +46,6 @@ namespace Nbtc.Network
         public string UserAgent { get; set; }
         public int StartHeight { get; set; }
         public bool Relay { get; set; }
-        public Command Command { get { return Command.Version; }}
-        
-
+        public Command Command => Command.Version;
     }
 }

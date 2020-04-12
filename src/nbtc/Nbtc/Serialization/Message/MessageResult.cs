@@ -1,6 +1,4 @@
-using Nbtc.Network;
-
-namespace Nbtc.Serialization
+namespace Nbtc.Serialization.Message
 {
     public class MessageResult
     {
@@ -9,7 +7,7 @@ namespace Nbtc.Serialization
         }
 
         public MessageStatut Statut { get; private set; }
-        public Message Message { get; private set; }
+        public Network.Message Message { get; private set; }
         public string Error { get; private set; }
 
         public static MessageResult Failed(string error)
@@ -22,7 +20,7 @@ namespace Nbtc.Serialization
             };
         }
 
-        public static MessageResult Succeed(Message message)
+        public static MessageResult Succeed(Network.Message message)
         {
             return new MessageResult
             {

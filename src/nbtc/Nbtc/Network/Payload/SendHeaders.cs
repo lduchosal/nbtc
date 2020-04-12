@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Nbtc.Network
+﻿namespace Nbtc.Network.Payload
 {
     /// <summary>
     /// The `sendheaders` message
@@ -18,6 +15,6 @@ namespace Nbtc.Network
     /// </summary>
     public class SendHeaders : IPayload
     {
-        public Command Command { get { return Command.SendHeaders;} }
+        public Command Command => Command.SendHeaders;
     }
 }

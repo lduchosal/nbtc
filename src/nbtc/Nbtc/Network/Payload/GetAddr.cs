@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Nbtc.Network
+﻿namespace Nbtc.Network.Payload
 {
     /// <summary>
     /// https://en.bitcoin.it/wiki/Protocol_documentation#getaddr
@@ -21,6 +19,6 @@ namespace Nbtc.Network
     /// </summary>
     public class GetAddr : IPayload
     {
-        public Command Command { get { return Command.GetAddr;} }
+        public Command Command => Command.GetAddr;
     }
 }

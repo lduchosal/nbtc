@@ -1,4 +1,5 @@
 using System;
+using Nbtc.Network.Payload;
 
 namespace Nbtc.Network
 {
@@ -61,11 +62,4 @@ namespace Nbtc.Network
         TestNet = 0x0709110B,
         RegTest = 0xDAB5BFFA,
     }
-    
-    public interface IPayload
-    {
-        Command Command { get; }
-    }
-
-
 }

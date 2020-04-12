@@ -1,6 +1,6 @@
 using System;
 
-namespace Nbtc.Network
+namespace Nbtc.Network.Payload
 {
     /// <summary>
     /// https://en.bitcoin.it/wiki/Protocol_documentation#Pong
@@ -22,6 +22,6 @@ namespace Nbtc.Network
     public class Pong : IPayload
     {
         public UInt64 Nonce { get; set; }
-        public Command Command { get { return Command.Pong; }}
+        public Command Command => Command.Pong;
     }
 }

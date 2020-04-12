@@ -4,7 +4,8 @@ using System.IO;
 using System.Security;
 using System.Text;
 using Nbtc.Network;
-using Version = Nbtc.Network.Version;
+using Nbtc.Network.Payload;
+using Version = Nbtc.Network.Payload.Version;
 
 namespace Nbtc.Serialization
 {

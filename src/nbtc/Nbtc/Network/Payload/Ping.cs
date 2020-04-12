@@ -1,6 +1,6 @@
 using System;
 
-namespace Nbtc.Network
+namespace Nbtc.Network.Payload
 {
     /// <summary>
     /// https://en.bitcoin.it/wiki/Protocol_documentation#ping
@@ -23,6 +23,6 @@ namespace Nbtc.Network
     public class Ping : IPayload
     {
         public UInt64 Nonce { get; set; }
-        public Command Command { get { return Command.Ping; }}
+        public Command Command => Command.Ping;
     }
 }

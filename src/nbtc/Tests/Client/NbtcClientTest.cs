@@ -22,23 +22,23 @@ namespace Tests.Client
             var logger = new Logger();
             var client = new NbtcClient(logger, message, hostname, port);
 
-            client.MessageReceived += (o, e) =>
+            client.Received += (o, e) =>
             {
                 var command = e.Payload.Command;
                 Console.WriteLine($"NetworkId : {e.Magic}");
                 Console.WriteLine($"Command: {command}");
             };
-            client.MessageReceived += (o, e) =>
+            client.Received += (o, e) =>
             {
                 var command = e.Payload.Command;
                 Console.WriteLine($"NetworkId : {e.Magic}");
                 Console.WriteLine($"Command: {command}");
             };
-            client.EventHappened += (o, e) =>
+            client.Event += (o, e) =>
             {
                 Console.WriteLine($"EventHappened : {e}");
             };
-            client.AddrReceived += (o, e) =>
+            client.Addr += (o, e) =>
             {
                 Console.WriteLine($"AddrReceived : {e}");
                 ev.Set();

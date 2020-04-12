@@ -5,7 +5,9 @@ using System.Net;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Nbtc.Network;
+using Nbtc.Network.Payload;
 using Nbtc.Serialization;
+using Nbtc.Serialization.Payload;
 using Nbtc.Util;
 
 namespace Tests.Network

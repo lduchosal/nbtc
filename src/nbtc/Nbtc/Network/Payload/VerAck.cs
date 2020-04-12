@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Nbtc.Network
+﻿namespace Nbtc.Network.Payload
 {
     /// <summary>
     /// https://en.bitcoin.it/wiki/Protocol_documentation#verack
@@ -28,6 +26,6 @@ namespace Nbtc.Network
     ///  </summary>
     public class VerAck : IPayload
     {
-        public Command Command { get { return Command.VerAck;} }
+        public Command Command => Command.VerAck;
     }
 }

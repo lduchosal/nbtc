@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
 using Nbtc.Network;
+using Nbtc.Network.Payload;
+using Nbtc.Serialization.Payload;
 
-namespace Nbtc.Serialization
+namespace Nbtc.Serialization.Message
 {
     public  sealed partial class MessageReader
     {
@@ -38,7 +40,7 @@ namespace Nbtc.Serialization
         /// </summary>
         /// <returns></returns>
         
-        public IEnumerable<Message> ReadMessages()
+        public IEnumerable<Network.Message> ReadMessages()
         {
 
             while (this.BaseStream.Length > 0)
@@ -85,7 +87,7 @@ namespace Nbtc.Serialization
 
             _logger.Debug("OnMessage : {@Message}", new { Magic = magic, Command = command, Length = length, Checksum = checksum});
 
-            if (command == Command.Unknwon)
+            if (command == Command.Unknown)
             {
                 throw new InvalidProgramException();
             }

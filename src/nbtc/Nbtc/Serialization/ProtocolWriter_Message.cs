@@ -1,11 +1,11 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 using Nbtc.Network;
-using Version = Nbtc.Network.Version;
-
+using Nbtc.Network.Payload;
+using Version = Nbtc.Network.Payload.Version;
+    
 namespace Nbtc.Serialization
 {
     public sealed partial class ProtocolWriter 
@@ -36,7 +36,7 @@ namespace Nbtc.Serialization
         /// 
         /// </summary>
         /// <param name="message"></param>
-        public void Write(Message message)
+        public void Write(Network.Message message)
         {
             Write(message.Magic);
             var payload = message.Payload;
@@ -125,7 +125,7 @@ namespace Nbtc.Serialization
         ///
         /// </summary>
         /// <param name="_getaddr"></param>
-        public void Write(GetAddr _getaddr)
+        public void Write(GetAddr getaddr)
         {
             // No payload data
         }
