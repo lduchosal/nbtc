@@ -9,8 +9,9 @@ using Nbtc.Serialization;
 using Nbtc.Serialization.Message;
 using Nbtc.Util;
 using Version = Nbtc.Network.Payload.Version;
+    
 
-namespace Nbtc.NodeWalker
+namespace NodeWalker.Business
 {
     public class NbtcClient : IDisposable
     {
@@ -19,8 +20,8 @@ namespace Nbtc.NodeWalker
         private readonly MessageProvider _message;
         private readonly NodeWalkerStateMachine _nodewalker;
         private readonly ILogger _logger;
-        public event  EventHandler<Message> Received = delegate {  };
-        public event  EventHandler<IEnumerable<Message>> Sent = delegate {  };
+        public event  EventHandler<Nbtc.Network.Message> Received = delegate {  };
+        public event  EventHandler<IEnumerable<Nbtc.Network.Message>> Sent = delegate {  };
         public event  EventHandler<string> Event = delegate {  };
         public event  EventHandler<Addr> Addr = delegate {  };
         public event  EventHandler<Exception> Error = delegate {  };
@@ -140,7 +141,7 @@ namespace Nbtc.NodeWalker
             }
         }
 
-        private void MessageReceive(Message message)
+        private void MessageReceive(Nbtc.Network.Message message)
         {
             Received(this, message);
             var command = message.Payload.Command;
@@ -170,7 +171,7 @@ namespace Nbtc.NodeWalker
         {
             _nodewalker.ConnectSocket();
         }
-        private void Send(IEnumerable<Message> msgs)
+        private void Send(IEnumerable<Nbtc.Network.Message> msgs)
         {
             var c = _client.Send((s) =>
             {

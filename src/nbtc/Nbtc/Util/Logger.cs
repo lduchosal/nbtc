@@ -1,4 +1,6 @@
 using System;
+using System.Net;
+using Nbtc.Client;
 using Nbtc.Network;
 using Nbtc.Serialization.Message;
 using Serilog;
@@ -15,11 +17,11 @@ namespace Nbtc.Util
         void Fatal(string template, params object[] values);
     }
 
-    public class Logger : ILogger, IDisposable
+    public class Logger : ILogger
     {
         public Logger()
         {
-            Log.Logger = new LoggerConfiguration()
+            Serilog.Log.Logger = new LoggerConfiguration()
                 .Destructure
                     .ByTransforming<TimedNetworkAddr>(
                     r => r.NetworkAddr )
@@ -30,14 +32,20 @@ namespace Nbtc.Util
                     .ByTransforming<Version>(
                         r => new { V = r.Vversion, U = r.UserAgent, H = r.StartHeight })
                 .Destructure
-                .ByTransforming<Message>(
-                    r => new { r.Magic, r.Command, r.Length })
+                    .ByTransforming<Message>(
+                        r => new { r.Magic, r.Command, r.Length })
                 .Destructure
-                .ByTransforming<MessageResult>(
-                    r => new { r.Statut, r.Error })
+                    .ByTransforming<MessageResult>(
+                        r => new { r.Statut, r.Error })
+                .Destructure
+                .ByTransforming<IPAddress>(
+                    r => r.ToString())
+
+                .Destructure
+                .ByTransforming<SeedElement>(
+                    r => r.Value)
 
             
-                    
                 .Enrich.WithThreadId()
                 .Enrich.FromLogContext()
                 
@@ -52,7 +60,7 @@ namespace Nbtc.Util
         }
         public ILogger For<T>()
         {
-            var serilog = Log.ForContext<T>();
+            var serilog = Serilog.Log.ForContext<T>();
             var logger = new Logger(serilog);
             return logger;
         } 
@@ -85,7 +93,7 @@ namespace Nbtc.Util
         }
         public void Dispose()
         {
-            Log.CloseAndFlush();
+            Serilog.Log.CloseAndFlush();
         }
     }
 }

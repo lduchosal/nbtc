@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Nbtc\Nbtc.csproj" />
+    <ProjectReference Include="..\NodeWalker\NodeWalker.csproj" />
   </ItemGroup>
 
 </Project>

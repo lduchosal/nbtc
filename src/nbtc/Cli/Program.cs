@@ -1,6 +1,4 @@
-﻿using Nbtc.NodeWalker;
-
-namespace Cli
+﻿namespace Cli
 {
     internal class Program
     {
@@ -9,7 +7,7 @@ namespace Cli
             string hostname = "127.0.0.1";
             int port = 8333;
 
-            using (var nw = new NodeWalker(hostname, port))
+            using (var nw = new NodeWalker.NodeWalker(hostname, port))
             {
                 nw.Run();
             }

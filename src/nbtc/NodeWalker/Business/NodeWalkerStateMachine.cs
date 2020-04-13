@@ -3,7 +3,7 @@ using Nbtc.Network.Payload;
 using Stateless;
 using Version = Nbtc.Network.Payload.Version;
 
-namespace Nbtc.NodeWalker
+namespace NodeWalker.Business
 {
     public class NodeWalkerStateMachine
     {

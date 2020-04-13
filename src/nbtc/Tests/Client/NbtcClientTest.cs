@@ -2,7 +2,6 @@ using System;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Nbtc.Client;
-using Nbtc.NodeWalker;
 using Nbtc.Util;
 
 namespace Tests.Client
@@ -17,7 +16,7 @@ namespace Tests.Client
             string hostname = "127.0.0.1";
             int port = 8333;
 
-            var nw = new NodeWalker(hostname, port);
+            var nw = new NodeWalker.NodeWalker(hostname, port);
             nw.Run();
             
             Thread.Sleep(1000);

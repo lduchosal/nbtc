@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cli", "Cli\Cli.csproj", "{8
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeetleX", "..\..\..\BeetleX\src\BeetleX\BeetleX.csproj", "{0D86EB02-7B91-4A26-8CE2-322EC09F1C9E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NodeWalker", "NodeWalker\NodeWalker.csproj", "{5CAC18FD-009D-4B4E-9927-DDBE03E0A6BD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{0D86EB02-7B91-4A26-8CE2-322EC09F1C9E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0D86EB02-7B91-4A26-8CE2-322EC09F1C9E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0D86EB02-7B91-4A26-8CE2-322EC09F1C9E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5CAC18FD-009D-4B4E-9927-DDBE03E0A6BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5CAC18FD-009D-4B4E-9927-DDBE03E0A6BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5CAC18FD-009D-4B4E-9927-DDBE03E0A6BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5CAC18FD-009D-4B4E-9927-DDBE03E0A6BD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
