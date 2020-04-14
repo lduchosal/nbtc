@@ -12,6 +12,7 @@ namespace NodeWalker.Data
         {
             var cnnString = ConfigurationManager.ConnectionStrings["node.sqlite"].ConnectionString;
             _conn = new SQLiteConnection(cnnString);
+            _conn.Open();
         }
         public DbConnection Node()
         {

@@ -22,7 +22,7 @@ namespace NodeWalker.Actor
 
         public Task ReceiveAsync(IContext context)
         {
-            _logger.Debug("{$message}", context.Message);
+            _logger.Trace("{$message}", context.Message);
 
             var msg = context.Message as Started;
             if (msg == null)

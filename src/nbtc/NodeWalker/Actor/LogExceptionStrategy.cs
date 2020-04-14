@@ -19,7 +19,7 @@ namespace NodeWalker.Actor
             RestartStatistics rs,
             Exception reason)
         {
-            _logger.Debug("{@reason}", reason);
+            _logger.Trace("{@reason}", reason);
             supervisor.StopChildren(child);
         }
     }

@@ -1,10 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Transactions;
+using System.Net;
 using Dapper;
 using Nbtc.Util;
-using IsolationLevel = System.Data.IsolationLevel;
 
 namespace NodeWalker.Data
 {
@@ -23,49 +22,46 @@ namespace NodeWalker.Data
         public void Init()
         {
 
-            _logger.Debug("Init");
+            _logger.Trace("Init");
             string sqlcreate = @"
 
                 CREATE TABLE IF NOT EXISTS node (
                     id INTEGER PRIMARY KEY,
                     ip VARCHAR(64) UNIQUE NOT NULL,
                     port INTEGER NOT NULL,
-                    src VARCHAR(64) NOT NULL,
+                    useragent VARCHAR(256) NULL,
+                    src VARCHAR(64) NULL,
+                    srcid INTEGER NULL,
+                    srctype INTEGER NOT NULL,
                     creation DATETIME NOT NULL,
                     updated DATETIME NOT NULL,
-                    status INTEGER NOT NULL
-                    )
-                    ;
+                    status INTEGER NOT NULL,
+                    FOREIGN KEY(srcid) REFERENCES node(id)
+                )
+                ;
 ";
-            _logger.Debug("Init [sqlcreate: {sqlcreate}]", sqlcreate);
+            _logger.Trace("Init {sqlcreate}", sqlcreate);
 
             var conn = _conn.Node();
             conn.Execute(sqlcreate);
         }
 
 
-        public enum StatusEnum
-        {
-            New = 0,
-            Valid = 1,
-            Deleted = 2,
-            Deactivate = 4,
-        }
 
-        public void BulkInsert(
-            IEnumerable<(string, int)> hosts,
+        public void Insert(
+            IEnumerable<(IPAddress, ushort)> hosts,
             string src,
-            uint identifier)
+            SourceTypeEnum srctype,
+            uint? identifier = null)
         {
-            _logger.Debug("BulkInsert [identifier: {identifier}]", identifier);
-            _logger.Debug("BulkInsert [src: {src}]", src);
-            _logger.Debug("BulkInsert [hosts: {hosts}]", hosts);
+            
+            _logger.Trace("Insert {@log}]", new { identifier, src, hosts = hosts.Count()});
 
             string sqlinsert = @"
 
                 INSERT OR IGNORE
-                    INTO node (ip, port, src, creation, updated, status) 
-                VALUES (@ip, @port, @src, @creation, @updated, @status)
+                    INTO node (ip, port, src, srcid, srctype, creation, updated, status) 
+                VALUES (@ip, @port, @src, @srcid, @srctype, @creation, @updated, @status)
                 
                     ;
             ";
@@ -79,51 +75,49 @@ namespace NodeWalker.Data
                     ;
             ";
 
-            _logger.Debug("BulkInsert [sqlinsert: {sqlinsert}]", sqlinsert);
-            _logger.Debug("BulkInsert [sqlupdate: {sqlupdate}]", sqlupdate);
+            _logger.Trace("Insert {@sqlinsert}", new { sqlinsert, sqlupdate});
 
             var now = DateTime.Now;
-
-            var inserts = hosts.Select(i =>
-                new
+            
+            var inserts = hosts.Select((item, i) =>
+                new Node
                 {
-                    ip = i.Item1,
-                    port = i.Item2,
-                    src = src,
-                    creation = now,
-                    updated = now,
-                    status = StatusEnum.New,
+                    Ip = item.Item1.ToString(),
+                    Port = item.Item2,
+                    Src = src,
+                    SrcId = identifier,
+                    SrcType = srctype,
+                    Creation = now,
+                    Updated = now,
+                    Status = StatusEnum.New,
                 });
 
             var update = new
             {
                 updated = now,
-                status = StatusEnum.Valid,
+                status = StatusEnum.Done,
                 id = identifier
             };
             var conn = _conn.Node();
             int icount = conn.Execute(sqlinsert, inserts);
-            _logger.Debug("BulkInsert [icount: {icount}]", icount);
             int ucount = conn.Execute(sqlupdate, update);
-            _logger.Debug("BulkInsert [ucount: {ucount}]", icount);
+            
+            _logger.Debug("Insert {@count}", new { src, identifier, icount, ucount });
         }
 
-        public void Delete(int identifier)
+        public void Delete(uint identifier)
         {
-            _logger.Debug("Delete [identifier: {identifier}]", identifier);
             UpdateStatus(identifier, StatusEnum.Deleted);
         }
 
-        public void Deactivate(int identifier)
+        public void Deactivate(uint identifier)
         {
-            _logger.Debug("Deactivate [identifier: {identifier}]", identifier);
             UpdateStatus(identifier, StatusEnum.Deactivate);
         }
         
-        private void UpdateStatus(int identifier, StatusEnum status)
+        private void UpdateStatus(uint identifier, StatusEnum status)
         {
-            _logger.Debug("UpdateStatus [identifier: {identifier}]", identifier);
-            _logger.Debug("UpdateStatus [status: {status}]", status);
+            _logger.Trace("UpdateStatus {@data}]", new { identifier, status });
             string sqlupdate = @"
 
                 UPDATE node 
@@ -133,7 +127,7 @@ namespace NodeWalker.Data
                     ;
 
             ";
-            _logger.Debug("BulkInsert [sqlupdate: {sqlupdate}]", sqlupdate);
+            _logger.Trace("BulkInsert [sqlupdate: {sqlupdate}]", sqlupdate);
 
             var now = DateTime.Now;
             var update = new
@@ -144,18 +138,46 @@ namespace NodeWalker.Data
             };
             
             var conn = _conn.Node();
-            conn.Execute(sqlupdate, update);
+            int updated = conn.Execute(sqlupdate, update);
+            
+            _logger.Trace("UpdateStatus {@count}", new { identifier, status, updated });
+
         }
         
         
+        public void UserAgent(uint identifier, string useragent)
+        {
+            _logger.Trace("UserAgent {@version}", new { identifier, useragent });
+            string sqlupdate = @"
+
+                UPDATE node 
+                    SET useragent = @useragent,
+                        updated = @updated
+                WHERE id = @id
+                    ;
+
+            ";
+            _logger.Trace("UserAgent {sqlupdate}", sqlupdate);
+
+            var now = DateTime.Now;
+            var update = new
+            {
+                updated = now,
+                useragent = useragent,
+                id = identifier
+            };
+            
+            var conn = _conn.Node();
+            conn.Execute(sqlupdate, update);
+        }
+
         public IEnumerable<Node> Select(StatusEnum status, int limit)
         {
-            _logger.Debug("Select [status: {status}]", status);
-            _logger.Debug("Select [limit: {limit}]", limit);
+            _logger.Trace("Select {@version}", new { status, limit });
             
             string sqlselect = @"
 
-                 SELECT id, ip, port, src, creation, updated, status
+                 SELECT id, ip, port, src, srctype, creation, updated, status
                    FROM node
                   WHERE status = @status
                ORDER BY id DESC
@@ -163,7 +185,7 @@ namespace NodeWalker.Data
                     ;
 
             ";
-            _logger.Debug("Select [sqlselect: {sqlselect}]", sqlselect);
+            _logger.Trace("Select {sqlselect}", sqlselect);
 
             var now = DateTime.Now;
             var select = new

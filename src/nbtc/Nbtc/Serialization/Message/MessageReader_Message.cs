@@ -5,6 +5,7 @@ using System.Security.Cryptography;
 using Nbtc.Network;
 using Nbtc.Network.Payload;
 using Nbtc.Serialization.Payload;
+using Nbtc.Util;
 
 namespace Nbtc.Serialization.Message
 {
@@ -47,12 +48,13 @@ namespace Nbtc.Serialization.Message
             {
                 long length = this.BaseStream.Length;
 
-                _logger.Debug("ReadMessages {@len}", length);
+                _logger.Trace("ReadMessages {@len} bytes length", length);
                 var result = _machine.Bytes(length);
-                _logger.Debug("ReadMessages {@result}", result);
+                _logger.Trace("ReadMessages {@result}", result);
 
                 if (result.Statut == MessageStatut.Failed)
                 {
+                    _logger.Debug("ReadMessages {error}", result.Error);
                     throw new InvalidDataException(result.Error);
                 }
                 else if (result.Statut == MessageStatut.Succeed)
@@ -68,7 +70,7 @@ namespace Nbtc.Serialization.Message
         
         private void OnUnHandled(object sender, string unhandled)
         {
-            _logger.Fatal("OnUnHandled [unhandled: {0}]", unhandled);
+            _logger.Debug("OnUnHandled [unhandled: {0}]", unhandled);
             throw new InvalidProgramException(unhandled);
         }
         
@@ -85,7 +87,7 @@ namespace Nbtc.Serialization.Message
             var length = ReadInt32();
             var checksum = ReadUInt32();
 
-            _logger.Debug("OnMessage : {@Message}", new { Magic = magic, Command = command, Length = length, Checksum = checksum});
+            _logger.Trace("OnMessage : {@Message}", new { Magic = magic, Command = command, Length = length, Checksum = checksum});
 
             if (command == Command.Unknown)
             {
@@ -114,14 +116,14 @@ namespace Nbtc.Serialization.Message
             var bpayload = ReadBytes(length);
             var blength = bpayload.Length;
             
-            _logger.Debug("OnChecksum : Len {@Len}", new
-            {
-                Message = length, 
-                Payload = blength
-            });
-
             if (blength != length)
             {
+                _logger.Debug("OnChecksum : Len {@Len}", new
+                {
+                    Message = length, 
+                    Payload = blength
+                });
+
                 mea.Result = MessageStatut.Failed;
                 return;
             }
@@ -130,15 +132,16 @@ namespace Nbtc.Serialization.Message
             var checksum2 = Checksum(bpayload);
             
             
-            _logger.Debug("OnChecksum : Checksum {@Checksum}", new
-            {
-                Message = checksum, 
-                Payload = checksum2
-            });
             
             if (checksum != checksum2)
             {
 
+
+                _logger.Debug("OnChecksum : Checksum {@Checksum}", new
+                {
+                    Message = checksum, 
+                    Payload = checksum2
+                });
                 mea.Result = MessageStatut.Failed;
                 return;
             }
@@ -157,6 +160,15 @@ namespace Nbtc.Serialization.Message
 
             if (payload is NotImplementedCommand)
             {
+                var hex = new HexDump();
+                var hexdebug = hex.Encode(mea.Message.BPayload);
+                _logger.Debug("OnPayload : NotImplementedCommand \n{@command}", 
+                    new
+                {
+                    command, 
+                    hexdebug
+                });
+
                 mea.Result = MessageStatut.Failed;
                 return;
             }

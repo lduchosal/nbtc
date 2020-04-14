@@ -24,7 +24,7 @@ namespace NodeWalker.Actor
 
         public Task ReceiveAsync(IContext context)
         {
-            _logger.Debug("{$message}", context.Message);
+            _logger.Trace("{$message}", context.Message);
 
             var msg = context.Message as ListNode;
             if (msg == null)
@@ -32,14 +32,21 @@ namespace NodeWalker.Actor
                 return Proto.Actor.Done;
             }
 
-            var nodes = _nodeProvider.Select(NodeProvider.StatusEnum.New, 100);
+            int max = 1000;
+
+            _logger.Debug("Listing top {max} nodes", max);
+
+            var nodes = _nodeProvider.Select(StatusEnum.New, max);
+            
+            _logger.Trace("List with {count} nodes", nodes.Count());
+            
             if (nodes.Any())
             {
                 foreach (var node in nodes)
                 {
                     var walk = new ClientMessage
                     {
-                        Hostname = node.Ip,
+                        Address = node.Ip,
                         Identifier = node.Id,
                         Port = node.Port,
                     };

@@ -12,6 +12,7 @@
     <ItemGroup>
       <PackageReference Include="Dapper" Version="2.0.35" />
       <PackageReference Include="Proto.Actor" Version="0.2.0" />
+      <PackageReference Include="Proto.Router" Version="0.2.0" />
       <PackageReference Include="Stateless" Version="5.1.1" />
       <PackageReference Include="System.Data.SQLite.Core" Version="1.0.112.1" />
     </ItemGroup>

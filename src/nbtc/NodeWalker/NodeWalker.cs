@@ -35,14 +35,15 @@ namespace NodeWalker
             var nodeRecorderPid = rootContext.Spawn(nodeRecorder);
 
             var dnsseeder = Props.FromProducer(() => new DnsSeederActor(logger, nodeRecorderPid));        
-
             var dnsseederPid = rootContext.Spawn(dnsseeder);
 
             var quit = Props.FromProducer(() => new QuitActor(logger, quitev));
             var quitPid = rootContext.Spawn(quit);
 
-            var client = Props.FromProducer(() => new ClientActor(logger));
-            var clientPid = rootContext.Spawn(client);
+
+            var client = Props.FromProducer(() => new ClientActor(logger, nodeRecorderPid));
+            var clientPool = Proto.Router.Router.NewRoundRobinPool(client, 10000);
+            var clientPid = rootContext.Spawn(clientPool);
 
             var nodelister = Props.FromProducer(() => new NodeListerActor(logger, nodeProvider, clientPid, quitPid));
             var nodelisterPid = rootContext.Spawn(nodelister);

@@ -3,9 +3,9 @@ using System.Net;
 
 namespace NodeWalker.Message
 {
-    public class NewNode
+    public class NewSeedNode
     {
         public string Src { get; set; }
-        public IEnumerable<(IPAddress, int)> Hosts { get; set; }
+        public IEnumerable<(IPAddress, ushort)> Hosts { get; set; }
     }
 }

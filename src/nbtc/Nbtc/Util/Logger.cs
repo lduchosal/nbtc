@@ -13,6 +13,7 @@ namespace Nbtc.Util
     {
         ILogger For<T>();
         void Debug(string template, params object[] values);
+        void Trace(string template, params object[] values);
         void Info(string template, params object[] values);
         void Fatal(string template, params object[] values);
     }
@@ -69,6 +70,13 @@ namespace Nbtc.Util
         public Logger(Serilog.ILogger inner)
         {
             _inner = inner;
+        }
+        public void Trace(string template, params object[] values)
+        {
+            if (_inner.IsEnabled(LogEventLevel.Verbose))
+            {
+                _inner.Verbose(template, values);
+            }
         }
         public void Debug(string template, params object[] values)
         {

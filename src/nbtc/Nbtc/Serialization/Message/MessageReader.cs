@@ -38,8 +38,7 @@ namespace Nbtc.Serialization.Message
             if (!parsed)
             {
                 command = Command.Unknown;
-                _logger.Debug("ReadCommand [scommand: {0}]", scommand);
-                _logger.Debug("ReadCommand [Command: {0}]", command);
+                _logger.Debug("ReadCommand {0}", new { scommand, command});
                 return command;
             }
             return command;

@@ -24,7 +24,7 @@ namespace NodeWalker.Actor
         public Task ReceiveAsync(IContext context)
         {
             
-            _logger.Debug("{$message}", context.Message);
+            _logger.Trace("{$message}", context.Message);
             
             var msg = context.Message as Seed;
             if (msg == null)
@@ -35,10 +35,10 @@ namespace NodeWalker.Actor
             foreach (var seed in _seeder.Seed())
             {
                 context.Send(_nodeRecorderPid, 
-                    new NewNode
+                    new NewSeedNode
                     {
                         Src = seed.Item1,
-                        Hosts = seed.Item2.Select(address => (address, 8333))
+                        Hosts = seed.Item2.Select(address => (address, (ushort)8333))
                     });
             }
             return Proto.Actor.Done;

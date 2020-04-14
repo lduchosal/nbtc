@@ -20,25 +20,15 @@ namespace NodeWalker.Actor
 
         public Task ReceiveAsync(IContext context)
         {
-            _logger.Debug("{$message}", context.Message);
-            
-            try
+            _logger.Trace("{$message}", context.Message);
+        
+            if (context.Message is Quit)
             {
-                if (context.Message is Quit)
-                {
-                    // shut down the system (acquire handle to system via
-                    // this actors context)
-                    _quitev.Set();
-                    return Proto.Actor.Done;
-                }
-
+                // shut down the system (acquire handle to system via
+                // this actors context)
+                _quitev.Set();
                 return Proto.Actor.Done;
             }
-            catch (Exception e)
-            {
-                _logger.Debug("Exception [{e}]", e);
-            }
-
 
             return Proto.Actor.Done;
         }
